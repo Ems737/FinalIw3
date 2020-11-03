@@ -1,4 +1,4 @@
-package ar.edu.iua.model;
+/*package ar.edu.iua.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -19,26 +19,10 @@ public class Sap implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long numeroOrden;
-
 	
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "camion_id")
-    private Camion camion;
-
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "chofer_id")
-    private Chofer chofer;
-    
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
-
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "producto_id")
-    private Producto producto; 
-    
     private Date turno; 
     
     private double preset; 
     
 }
+*/

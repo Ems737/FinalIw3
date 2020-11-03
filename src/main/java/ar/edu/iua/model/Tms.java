@@ -1,4 +1,4 @@
-package ar.edu.iua.model;
+/*package ar.edu.iua.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -27,3 +27,4 @@ public class Tms implements Serializable {
 	//GENERAR GETTER Y SETTER
     
 }
+*/

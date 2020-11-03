@@ -12,19 +12,28 @@ import javax.persistence.*;
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
 
 //ESTE ES NUESTRO SISTEMA EXTERNO
-public class DatosDetalle implements Serializable {
+public class DetalleOrden implements Serializable {
 
 	private static final long serialVersionUID = 4551249436451185765L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	//VINCULAR CON SISTEMA SAP
 	private long id;
 	
+	@Column()
 	private double masaAcumulada; 
+	@Column()
 	private double densidad;
+	@Column()
 	private double temperatura; 
+	@Column()
 	private double caudal; 
+	@Column()
+	private Date fechaHoraMedicion; 
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "numeroOrden")
+	private Orden orden; 
 	
 
 	//GENERAR GETTER Y SETTER

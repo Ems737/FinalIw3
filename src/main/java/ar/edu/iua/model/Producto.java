@@ -2,8 +2,7 @@ package ar.edu.iua.model;
 
 import java.io.Serializable;
 
-
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import javax.persistence.GeneratedValue;
@@ -30,8 +29,10 @@ public class Producto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id; 
 	
+	@Column()
 	private String nombre; 
 	
+	@Column()
 	private String descripcion;
 
 	public long getId() {

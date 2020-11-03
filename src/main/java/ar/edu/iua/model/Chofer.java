@@ -37,7 +37,9 @@ public class Chofer implements Serializable {
     @JsonBackReference
     private List<Orden> ordenList;
 	
+	@Column()
 	private String nombre; 
+	@Column()
 	private String apellido;
 	
 	public long getId() {

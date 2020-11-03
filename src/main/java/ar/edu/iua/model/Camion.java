@@ -27,15 +27,16 @@ public class Camion implements Serializable{
 	@Column(unique=true)
 	private String patente; 
 
-    //Deberiamos cambiarlo a JSON
+    @Column()
     private String descripcion;
 
     @OneToMany(targetEntity=Orden.class, mappedBy="camion", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Orden> ordenList;
     
-    //Revisar tipo de dato
-    private String cisternado;
+   
+    @Column()
+    private double cisternado[];
 
 	public long getId() {
 		return id;
@@ -69,13 +70,15 @@ public class Camion implements Serializable{
 		this.ordenList = ordenList;
 	}
 
-	public String getCisternado() {
+	public double[] getCisternado() {
 		return cisternado;
 	}
 
-	public void setCisternado(String cisternado) {
+	public void setCisternado(double[] cisternado) {
 		this.cisternado = cisternado;
-	} 
+	}
+
+	
     
     
 }

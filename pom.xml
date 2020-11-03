@@ -18,7 +18,7 @@
 
 	<properties>
 		<java.version>8</java.version>
-		<packaging.type>war</packaging.type>
+		
 		<tomcat.scope>provided</tomcat.scope>
 	</properties>
 
