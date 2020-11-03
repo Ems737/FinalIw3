@@ -20,31 +20,56 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Table(name="clientes")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+
 public class Cliente implements Serializable {
 	
 	private static final long serialVersionUID = 6736832429914967093L;
 
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	
+	private String razonSocial; 
+	
+	private long contacto; 
+	
 	@OneToMany(targetEntity=Orden.class, mappedBy="cliente", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Orden> ordenList;
-	
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	
-	public Long getId() {
+
+	public long getId() {
 		return id;
 	}
-	public void setId(Long id) {
+
+	public void setId(long id) {
 		this.id = id;
 	}
+
 	public String getRazonSocial() {
 		return razonSocial;
 	}
+
 	public void setRazonSocial(String razonSocial) {
 		this.razonSocial = razonSocial;
 	}
-	private String razonSocial;
+
+	public long getContacto() {
+		return contacto;
+	}
+
+	public void setContacto(long contacto) {
+		this.contacto = contacto;
+	}
+
+	public List<Orden> getOrdenList() {
+		return ordenList;
+	}
+
+	public void setOrdenList(List<Orden> ordenList) {
+		this.ordenList = ordenList;
+	}
+	
+	
 	
 	
 

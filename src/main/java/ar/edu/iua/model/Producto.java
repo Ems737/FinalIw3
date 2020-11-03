@@ -1,10 +1,11 @@
 package ar.edu.iua.model;
 
 import java.io.Serializable;
-import java.util.List;
+
+
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,30 +14,50 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(name = "detalleCarga")
+@Table(name="productos")
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
-public class DetalleCarga implements Serializable {
 
-	private static final long serialVersionUID = 643368857697756593L;
+public class Producto implements Serializable {
 
-	@OneToMany(targetEntity=Orden.class, mappedBy="detallecarga", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Orden> ordenList;
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private long id; 
+	
+	private String nombre; 
+	
+	private String descripcion;
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	} 
+	
 	
 	
 

@@ -13,7 +13,8 @@ import java.util.List;
 @Entity
 @Table(name="camiones")
 @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="patente")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+
 public class Camion implements Serializable{
 
 	private static final long serialVersionUID = 7360841509302825955L;
@@ -21,8 +22,10 @@ public class Camion implements Serializable{
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
+	@Column(unique=true)
+	private String patente; 
 
     //Deberiamos cambiarlo a JSON
     private String descripcion;
@@ -30,20 +33,49 @@ public class Camion implements Serializable{
     @OneToMany(targetEntity=Orden.class, mappedBy="camion", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Orden> ordenList;
+    
+    //Revisar tipo de dato
+    private String cisternado;
 
+	public long getId() {
+		return id;
+	}
 
-    public int getId() {
-        return patente;
-    }
-    public void setId(int patente) {
-        this.patente = patente;
-    }
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+	public String getPatente() {
+		return patente;
+	}
 
+	public void setPatente(String patente) {
+		this.patente = patente;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public List<Orden> getOrdenList() {
+		return ordenList;
+	}
+
+	public void setOrdenList(List<Orden> ordenList) {
+		this.ordenList = ordenList;
+	}
+
+	public String getCisternado() {
+		return cisternado;
+	}
+
+	public void setCisternado(String cisternado) {
+		this.cisternado = cisternado;
+	} 
+    
+    
 }
