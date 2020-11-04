@@ -1,6 +1,5 @@
 package ar.edu.iua.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -12,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="numeroOrden")
 
-//ES LA RELACION ENTRE EL SISTEMA INTERNO Y EXTERNO
+
 public class Orden implements Serializable {
 
 	private static final long serialVersionUID = 451621105748580924L;
@@ -21,9 +20,11 @@ public class Orden implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long numeroOrden;
 	
-	//JSON QUE NOS DA CIERTOS DATOS DE EL CAMION, EL CLIENTE, ETC. 
+	@Column()
+	private double preset;
+	@Column()
+	private double pesajeInicial; 
 	
-	//UN SISTEMA EXTERNO DA CIERTOS ATRIBUTOS DE ESTOS OBJETOS 
 	@ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "camion_id")
 	private Camion camion; 
@@ -44,20 +45,44 @@ public class Orden implements Serializable {
 	//DATOS QUE SE VAN ACTUALIZANDO SEGUN LA ORDEN DETALLE QUE SE RECIBE 
 
 	@Column(columnDefinition = "DATETIME")
-	private Date fechaHoraAlmacenamiento; 
+	private Date turno; 
 	
-	//SE RECIBE DEL SISTEMA EXTERNO? 
-	@Column()
-	private double pesajeInicial; 
+	@Column(columnDefinition = "DATETIME")
+	private Date fechaHoraPesajeInicial; 
 	
-	//COMO GENERARLA?
+	@Column(columnDefinition = "DATETIME")
+	private Date fechaHoraInicioCarga; 
+	
+	@Column(columnDefinition = "DATETIME")
+	private Date fechaHoraFinCarga; 
+	
+	@Column(columnDefinition = "DATETIME")
+	private Date fechaHoraPesajeFinal; 
+	
 	@Column(length=5)
 	private int password; 
 	
+	@Column()
+	private double ultimaMasaAcumulada; 
+	@Column()
+	private double ultimaDensidad;
+	@Column()
+	private double ultimaTemperatura; 
+	@Column()
+	private double ultimoCaudal; 
 	
-
+	@Column(columnDefinition = "DATETIME")
+	private Date fechaHoraUltimoAlmacenamiento; 
 	
-
-	//GENERAR GETTER Y SETTER
+	@Column()
+	private double promedioDensidad;
+	@Column()
+	private double promedioTemperatura; 
+	@Column()
+	private double promedioCaudal; 
+	
+	//Codigo de integracion 
+	private String codigoExternoCamion; 
+	
     
 }

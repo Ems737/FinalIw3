@@ -19,7 +19,6 @@ public class Camion implements Serializable{
 
 	private static final long serialVersionUID = 7360841509302825955L;
 
-
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
