@@ -4,7 +4,11 @@ import java.util.List;
 
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
+import ar.edu.iua.model.Camion;
+import ar.edu.iua.model.Chofer;
+import ar.edu.iua.model.Cliente;
 import ar.edu.iua.model.Orden;
+import ar.edu.iua.model.Producto;
 
 public interface IOrdenBusiness {
 
@@ -19,5 +23,9 @@ public interface IOrdenBusiness {
     Orden add(Orden orden) throws BusinessException;
     
     public Orden update(Orden producto, Long id) throws NotFoundException, BusinessException;
+    
+	public Orden load(String codigoExterno) throws NotFoundException, BusinessException;
+	
+	public Orden asegurarOrden(Orden orden, Cliente cliente, Camion camion, Chofer chofer, Producto producto) throws BusinessException;
 
 }
