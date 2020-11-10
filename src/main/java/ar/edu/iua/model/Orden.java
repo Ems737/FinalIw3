@@ -3,7 +3,9 @@ package ar.edu.iua.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+
 import java.io.Serializable;
+
 import java.util.Date;
 
 import javax.persistence.*;
@@ -45,7 +47,7 @@ public class Orden implements Serializable {
 	//DATOS QUE SE VAN ACTUALIZANDO SEGUN LA ORDEN DETALLE QUE SE RECIBE 
 
 	@Column(columnDefinition = "DATETIME")
-	private Date turno; 
+	private String turno; 
 	
 	@Column(columnDefinition = "DATETIME")
 	private Date fechaHoraPesajeInicial; 
@@ -151,11 +153,11 @@ public class Orden implements Serializable {
 		this.estado = estado;
 	}
 
-	public Date getTurno() {
+	public String getTurno() {
 		return turno;
 	}
 
-	public void setTurno(Date turno) {
+	public void setTurno(String turno) {
 		this.turno = turno;
 	}
 
@@ -271,9 +273,7 @@ public class Orden implements Serializable {
 		this.codigoExterno = codigoExterno;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
+	
 
 	public Orden(Orden orden, Cliente cliente, Camion camion, Chofer chofer, Producto producto) {
 		this.codigoExterno = orden.codigoExterno;
@@ -286,6 +286,30 @@ public class Orden implements Serializable {
 		this.estado = 1;
 		this.turno = orden.getTurno();
 	
+	}
+	
+	public String checkBasicData(){
+		
+		if(getCodigoExterno()==null || getCodigoExterno().trim().length()==0)
+			return "El codigo externo es obligatorio";
+		if(getCamion().getPatente()==null|| getCamion().getPatente().trim().length()==0)
+			return "El atributo camion.patente es obligatorio";
+		if(getNumeroOrden()==0.0 || getNumeroOrden()<0)
+			return "El numero de orden es obligatorio";
+		if(getPreset()==0.0 || getPreset()<0)
+			return "El present es obligatorio";
+		if(getCliente().getRazonSocial()==null || getCliente().getRazonSocial().trim().length()==0)
+			return "El atributo cliente.razonSocial es obligatorio";
+		
+		if(getChofer().getDni()==0)
+			return "El atributo chofer.dni es obligatorio";
+		if(getProducto().getNombre()==null || getProducto().getNombre().trim().length()==0)
+			return "El atributo producto.nombre es obligatorio";
+		
+		if(getTurno()==null || getTurno().trim().length()==0)
+			return "El turno es un atributo obligatorio"; 
+	
+		return null; 
 	}
 	
 	

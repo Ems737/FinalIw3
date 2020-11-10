@@ -1,10 +1,9 @@
-package ar.edu.iua.business;
+/*package ar.edu.iua.business;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -16,14 +15,14 @@ import ar.edu.iua.model.Chofer;
 import ar.edu.iua.model.Cliente;
 import ar.edu.iua.model.Orden;
 import ar.edu.iua.model.Producto;
+import ar.edu.iua.model.dto.MensajeRespuesta;
+import ar.edu.iua.model.dto.RespuestaGenerica;
 import ar.edu.iua.model.persistence.OrdenRepository;
 
 @Service
 public class OrdenBusiness implements IOrdenBusiness {
 
-    private Logger log = LoggerFactory.getLogger(this.getClass());
-
-
+	
 	@Autowired
 	private OrdenRepository ordenDAO;
 
@@ -98,7 +97,7 @@ public class OrdenBusiness implements IOrdenBusiness {
     	return add(op);
     	
     }
-*/
+
 	@Override
 	public Orden load(String codigoExterno) throws NotFoundException, BusinessException {
 		Optional<Orden> or;
@@ -135,6 +134,33 @@ public class OrdenBusiness implements IOrdenBusiness {
 		return ordenDAO.save(o);
 
 	}
+
+	@Override
+	public Orden update(Orden producto, Long id) throws NotFoundException, BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RespuestaGenerica<Orden> recibir(Orden orden) throws BusinessException {
+		
+		MensajeRespuesta m = new MensajeRespuesta();
+		RespuestaGenerica<Orden> = new RespuestaGenerica<Orden>(orden,m);
+		
+		String mensajeCheck = orden.checkBasicData();
+		
+		if(mensajeCheck!=null)
+		{
+			m.setCodigo(-1);
+			m.setMensaje(mensajeCheck);
+		}
+		
+		
+	}
+
+	
+	
 	
 }
+*/
 

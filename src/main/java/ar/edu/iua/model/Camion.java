@@ -19,24 +19,29 @@ public class Camion implements Serializable{
 
 	private static final long serialVersionUID = 7360841509302825955L;
 
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-	@Column(unique=true)
+	@Column(length=6, nullable=false)
 	private String patente; 
 
-    @Column()
+    @Column(length=200)
     private String descripcion;
+    
+    @Column()
+    private double cisternado[];
+    
+    @Column(length = 50, nullable = true, unique = true)
+    private String codigoexterno; 
 
+    //VER
     @OneToMany(targetEntity=Orden.class, mappedBy="camion", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Orden> ordenList;
     
-   
-    @Column()
-    private double cisternado[];
-
+    //Getters y setters
 	public long getId() {
 		return id;
 	}
@@ -77,6 +82,24 @@ public class Camion implements Serializable{
 		this.cisternado = cisternado;
 	}
 
+
+	public String getCodigoexterno() {
+		return codigoexterno;
+	}
+
+
+	public void setCodigoexterno(String codigoexterno) {
+		this.codigoexterno = codigoexterno;
+	}
+
+	public String checkBasicData(){
+	
+		if(getPatente() == null || getPatente().trim().length()==0 || getPatente().trim().length()<6 )
+			return "La patente es un atributo obligatorio";
+		return null;
+	
+	}
+	
 	
     
     

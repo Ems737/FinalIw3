@@ -30,7 +30,7 @@ public class Chofer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id; 
 	
-	@Column(unique=true)
+	@Column(nullable = false)
 	private long dni;
 	
 	@OneToMany(targetEntity=Orden.class, mappedBy="chofer", fetch = FetchType.LAZY)
@@ -72,6 +72,14 @@ public class Chofer implements Serializable {
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	} 
+	
+	public String checkBasicData()
+	{
+		if(getDni()==0)
+			return "El dni es un atributo obligatorio";
+		return null; 
+	}
+	
 	
 	
 	

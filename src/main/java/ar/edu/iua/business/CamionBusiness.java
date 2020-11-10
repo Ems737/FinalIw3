@@ -4,15 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;	
 //import ar.edu.iua.eventos.CamionEvent;
-import ar.edu.iua.model.Camion;
 import ar.edu.iua.model.Camion;
 import ar.edu.iua.model.persistence.CamionRepository;
 
@@ -20,113 +18,111 @@ import ar.edu.iua.model.persistence.CamionRepository;
 public class CamionBusiness implements ICamionBusiness {
 
 	@Autowired
-	private CamionRepository camionDAO;
+	private CamionRepository camionDAO; 
+	
+	
+	/*//VER PORQUE NO FUNCIONA CON EL ID 
+	@Override
+	public Camion load(Object object) throws NotFoundException, BusinessException {
+		Optional<Camion> camion;
+		try {
+				if(object.getClass().getName().equals("java.lang.String"))
+					camion = camionDAO.findByPatente((String)object);
+				else
+					camion = camionDAO.findById((Long) object);
+			} catch (Exception e) {
+				throw new BusinessException(e);
+			} 
+		if(!camion.isPresent())
+			throw new NotFoundException("El camion no se encuentra en la BD");
+		
+		return camion.get(); 
+	}
+	*/
+	
+	@Override
+	public Camion load(long id) throws NotFoundException, BusinessException {
+		Optional<Camion> camion;
+		try {
+				camion = camionDAO.findById(id);
+			} catch (Exception e) {
+				throw new BusinessException(e);
+			} 
+		if(!camion.isPresent())
+			throw new NotFoundException("El camion no se encuentra en la BD");
+		
+		return camion.get(); 
+		
+	}
 
 	@Override
-	public Camion load(Long id) throws NotFoundException, BusinessException {
-		Optional<Camion> op;
+	public List<Camion> list() throws BusinessException {
 		try {
-			op = camionDAO.findById(id);
+			return camionDAO.findAll();
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		if (!op.isPresent()) {
-			throw new NotFoundException("El camion con id " + id + " no se encuentra en la BD");
-		}
-		return op.get();
 	}
 
 	@Override
 	public Camion add(Camion camion) throws BusinessException {
 		try {
-			return camionDAO.save(camion);
+			if(camion.checkBasicData()==null)
+				return camionDAO.save(camion);
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
+		return new Camion();
+		
 	}
+
+	@Override
+	public Camion update(Camion camion) throws NotFoundException, BusinessException {
+		
+		Camion camionNuevo = new Camion();
+		Camion camionViejo = load(camion.getId());
+			
+			if(camion.getPatente()==null || camion.getPatente().trim().length()==0)
+				camionNuevo.setPatente(camionViejo.getPatente());
+			else
+				camionNuevo.setPatente(camion.getPatente());
+			
+			if(camion.getOrdenList().isEmpty())
+				camionNuevo.setOrdenList(camionViejo.getOrdenList());
+			else
+				camionNuevo.setOrdenList(camion.getOrdenList());
+			
+			if(camion.getDescripcion()==null || camion.getDescripcion().trim().length()==0)
+				camionNuevo.setDescripcion(camionViejo.getDescripcion());
+			else 
+				camionNuevo.setDescripcion(camion.getDescripcion());
+			
+			if(camion.getCodigoexterno()==null || camion.getCodigoexterno().trim().length()==0)
+				camionNuevo.setCodigoexterno(camionViejo.getCodigoexterno());
+			else
+				camionNuevo.setCodigoexterno(camion.getCodigoexterno());
+			
+			if(camion.getCisternado().length == 0)
+				camionNuevo.setCisternado(camionViejo.getCisternado());
+			else
+				camionNuevo.setCisternado(camion.getCisternado());
+			
+		return add(camionNuevo);
+	}
+	
 
 	@Override
 	public void delete(Long id) throws NotFoundException, BusinessException {
 		try {
 			camionDAO.deleteById(id);
-		} catch (EmptyResultDataAccessException e1) {
-			throw new NotFoundException("No se encuentra el camion id=" + id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new NotFoundException("No se encuentra el camion con id=" + id);
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-
+		
 	}
-
-/*
-	@Autowired
-	private ApplicationEventPublisher appEventPublisher;
-
-	private void generaEvento(Camion camion, CamionEvent.Tipo tipo) {
-		appEventPublisher.publishEvent(new CamionEvent(camion, tipo));
-	}
-
-	@Override
-	public List<Camion> list(String parte) throws BusinessException {
-		try {
-			return camionDAO.findByNombreContainingOrDescripcionContainingOrderByNombreDesc(parte, parte);
-		} catch (Exception e) {
-			throw new BusinessException(e);
-		}
-	}
-*/
-
-		@Override
-	    public Camion update(Camion camion) throws NotFoundException, BusinessException {
-	        Camion op;
-	        try {
-	    	op = load(camion.getId());
-	        } catch(Exception e) {
-	        	throw new BusinessException(e);
-	        }
-	    	if(camion.getPatente()!=null){
-	    		op.setPatente(camion.getPatente());
-	    	}
-	    	if(camion.getDescripcion()!=null){
-	    		op.setDescripcion(camion.getDescripcion());
-	    	}
-	    	return add(op);
-	    	
-	    }
 	
-	@Override
-	public Camion load(String codigoExterno) throws NotFoundException, BusinessException {
-		Optional<Camion> op;
-		try {
-			op = camionDAO.findFirstByCodigoExterno(codigoExterno);
-		} catch (Exception e) {
-			throw new BusinessException(e);
-		}
-		if (!op.isPresent()) {
-			throw new NotFoundException(
-					"El camion con código externo " + codigoExterno + " no se encuentra en la BD");
-		}
-		return op.get();
-	}
-
-//camion se recibe incompleto desde un sistema externo.
-	@Override
-	public Camion asegurarCamion(Camion camion) throws BusinessException {
-		Camion p = null;
-		try {
-			//Probamos cargar desde la BD un camion a traves del codigoExterno
-			p = load(camion.getCodigoExterno());
-			//Establecemos los nuevos valores en el camion guardado en la BD
-			p.setPatente(camion.getPatente());
-			p.setDescripcion(camion.getDescripcion());
-			p.setCisternado(camion.getCisternado());
-			// Colocar aquí los datos recibidos no opcionales
-		} catch (NotFoundException e) {
-			p = new Camion(camion);
-		}
-		return camionDAO.save(p);
-	}
+	
 
 }
-
-//@Autowired
-//private ICamionBusiness camionBusiness
