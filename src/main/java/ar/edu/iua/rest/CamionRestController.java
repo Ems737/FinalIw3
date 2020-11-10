@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ar.edu.iua.business.ICamionBusiness;
@@ -39,6 +40,20 @@ public class CamionRestController {
 		private ICamionBusiness camionBusiness;
 		
 		
+		//curl "http://localhost:8080/api/v1/camiones/1"
+				@GetMapping(value = "/load", produces = MediaType.APPLICATION_JSON_VALUE)
+				public ResponseEntity<Camion> load(
+						@RequestParam(name = "patente", required = false, defaultValue = "*") String patente,
+						@RequestParam(name = "id", required = false, defaultValue = "0") long id){
+					try {
+						return new ResponseEntity<Camion>(camionBusiness.load(patente,id),HttpStatus.OK);
+					} catch (BusinessException e) {
+						return new ResponseEntity<Camion>(HttpStatus.INTERNAL_SERVER_ERROR);
+					} catch (NotFoundException e) {
+						return new ResponseEntity<Camion>(HttpStatus.NOT_FOUND);
+					}
+				}
+		
 		/*
 		//curl "http://localhost:8080/api/v1/camiones/1"
 		@GetMapping(value = "/{atributo}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,10 +65,12 @@ public class CamionRestController {
 			} catch (NotFoundException e) {
 				return new ResponseEntity<Camion>(HttpStatus.NOT_FOUND);
 			}
-		}
-		*/
+		}*/
+		
 		
 	
+		
+		/*
 		//curl "http://localhost:8080/api/v1/camiones/1"
 		@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<Camion> load(@PathVariable(name = "id")long id) {
@@ -65,10 +82,9 @@ public class CamionRestController {
 				return new ResponseEntity<Camion>(HttpStatus.NOT_FOUND);
 			}
 		}
-		
-		
-		
-		@GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+		*/
+
+		@GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<List<Camion>> list(){
 			try {
 				return new ResponseEntity<List<Camion>>(camionBusiness.list(),HttpStatus.OK);
@@ -78,7 +94,7 @@ public class CamionRestController {
 			
 		}
 		
-		@PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+		@PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<String> add(@RequestBody Camion camion){
 			try {
 				camionBusiness.add(camion);
@@ -90,10 +106,11 @@ public class CamionRestController {
 			}
 		}
 		
-		@PutMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<String> update(@RequestBody Camion camion) {
+		@PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<String> update(@PathVariable("id") Long id,@RequestBody Camion camion) {
 			try {
-				camionBusiness.update(camion);
+				
+				camionBusiness.update(camion,id);
 				return new ResponseEntity<String>(HttpStatus.OK);
 			} catch (BusinessException e) {
 				return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);

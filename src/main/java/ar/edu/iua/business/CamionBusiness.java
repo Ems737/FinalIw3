@@ -20,12 +20,48 @@ public class CamionBusiness implements ICamionBusiness {
 	@Autowired
 	private CamionRepository camionDAO; 
 	
+	@Override
+		public Camion load(String patente, long id) throws NotFoundException, BusinessException {
+			Optional<Camion> camion; 
+			try {
+					if(patente !="*" && id == 0)
+						camion = camionDAO.findByPatente(patente);
+					else 
+						camion = camionDAO.findById(id);
+					
+				} catch (Exception e) {
+					throw new BusinessException(e);
+				} 
+			if(!camion.isPresent())
+				throw new NotFoundException("El camion no se encuentra en la BD");
+			
+			return camion.get(); 
+		}
+	
+	@Override
+	public Camion load(long id) throws NotFoundException, BusinessException {
+		Optional<Camion> camion; 
+		try {
+				
+					camion = camionDAO.findById(id);
+				
+			} catch (Exception e) {
+				throw new BusinessException(e);
+			} 
+		if(!camion.isPresent())
+			throw new NotFoundException("El camion no se encuentra en la BD");
+		
+		return camion.get(); 
+	}
+		
 	
 	/*//VER PORQUE NO FUNCIONA CON EL ID 
 	@Override
 	public Camion load(Object object) throws NotFoundException, BusinessException {
 		Optional<Camion> camion;
 		try {
+				
+				if(object.is)
 				if(object.getClass().getName().equals("java.lang.String"))
 					camion = camionDAO.findByPatente((String)object);
 				else
@@ -40,6 +76,7 @@ public class CamionBusiness implements ICamionBusiness {
 	}
 	*/
 	
+	/*
 	@Override
 	public Camion load(long id) throws NotFoundException, BusinessException {
 		Optional<Camion> camion;
@@ -54,7 +91,7 @@ public class CamionBusiness implements ICamionBusiness {
 		return camion.get(); 
 		
 	}
-
+*/
 	@Override
 	public List<Camion> list() throws BusinessException {
 		try {
@@ -77,21 +114,21 @@ public class CamionBusiness implements ICamionBusiness {
 	}
 
 	@Override
-	public Camion update(Camion camion) throws NotFoundException, BusinessException {
+	public Camion update(Camion camion, Long id) throws NotFoundException, BusinessException {
 		
 		Camion camionNuevo = new Camion();
-		Camion camionViejo = load(camion.getId());
-			
+		Camion camionViejo = load(id);
+			System.out.println(camionViejo.getId() + camionViejo.getPatente());
 			if(camion.getPatente()==null || camion.getPatente().trim().length()==0)
 				camionNuevo.setPatente(camionViejo.getPatente());
 			else
 				camionNuevo.setPatente(camion.getPatente());
 			
-			if(camion.getOrdenList().isEmpty())
+			/*if(camion.getOrdenList().isEmpty())
 				camionNuevo.setOrdenList(camionViejo.getOrdenList());
 			else
 				camionNuevo.setOrdenList(camion.getOrdenList());
-			
+			*/
 			if(camion.getDescripcion()==null || camion.getDescripcion().trim().length()==0)
 				camionNuevo.setDescripcion(camionViejo.getDescripcion());
 			else 
@@ -102,10 +139,11 @@ public class CamionBusiness implements ICamionBusiness {
 			else
 				camionNuevo.setCodigoexterno(camion.getCodigoexterno());
 			
-			if(camion.getCisternado().length == 0)
+			/*if(camion.getCisternado().length==0)
 				camionNuevo.setCisternado(camionViejo.getCisternado());
 			else
 				camionNuevo.setCisternado(camion.getCisternado());
+				*/
 			
 		return add(camionNuevo);
 	}
