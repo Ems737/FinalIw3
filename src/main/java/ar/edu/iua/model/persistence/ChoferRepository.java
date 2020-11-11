@@ -11,7 +11,6 @@ import ar.edu.iua.model.Chofer;
 @Repository
 public interface ChoferRepository extends JpaRepository<Chofer, Long>{
 	
-	
 	Optional<Chofer> findByDni(long dni);
 	
 }

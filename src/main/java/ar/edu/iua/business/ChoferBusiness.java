@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
-import ar.edu.iua.model.Camion;
-import ar.edu.iua.model.Chofer;
 import ar.edu.iua.model.Chofer;
 import ar.edu.iua.model.persistence.ChoferRepository;
 
@@ -23,15 +21,34 @@ public class ChoferBusiness implements IChoferBusiness{
 	private ChoferRepository choferDAO;
 
 	@Override
-	public Chofer load(long id) throws NotFoundException, BusinessException {
+	public Chofer load(long id,long dni) throws NotFoundException, BusinessException {
 		Optional<Chofer> chofer;
 		try {
-				chofer = choferDAO.findById(id);
+				if(id!=0&& dni==0)
+					chofer = choferDAO.findById(id);
+				else
+					chofer = choferDAO.findByDni(dni); 
 			} catch (Exception e) {
 				throw new BusinessException(e);
 			} 
 		if(!chofer.isPresent())
 			throw new NotFoundException("El Chofer no se encuentra en la BD");
+		
+		return chofer.get(); 
+	}
+	
+	@Override
+	public Chofer load(long id) throws NotFoundException, BusinessException {
+		Optional<Chofer> chofer; 
+		try {
+				
+					chofer = choferDAO.findById(id);
+				
+			} catch (Exception e) {
+				throw new BusinessException(e);
+			} 
+		if(!chofer.isPresent())
+			throw new NotFoundException("El camion no se encuentra en la BD");
 		
 		return chofer.get(); 
 	}
@@ -48,22 +65,49 @@ public class ChoferBusiness implements IChoferBusiness{
 	@Override
 	public Chofer add(Chofer chofer) throws BusinessException {
 		try {
+			
 			if(chofer.checkBasicData()==null)
 				return choferDAO.save(chofer);
+			else
+				throw new BusinessException();
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		return new Chofer();
+		
 	}
 
-	@Override
-	public Chofer update(Chofer Chofer) throws NotFoundException, BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+	 @Override
+	public Chofer update(Chofer chofer, long id) throws NotFoundException, BusinessException {
+		Chofer choferNuevo = new Chofer();
+		Chofer choferViejo = load(id);
+		
+		choferNuevo.setId(id);
+		
+		if(chofer.getApellido()==null || chofer.getApellido().trim().length()==0)
+			choferNuevo.setApellido(choferViejo.getApellido());
+		else
+			choferNuevo.setApellido(chofer.getApellido());
+		
+		if(chofer.getDni()==0)
+			choferNuevo.setDni(choferViejo.getDni());
+		else
+			choferNuevo.setDni(chofer.getDni());
+		
+		if(chofer.getNombre()==null || chofer.getNombre().trim().length()==0)
+			choferNuevo.setNombre(choferViejo.getNombre());
+		else
+			choferNuevo.setNombre(chofer.getNombre());
+		
+		//FALTA VER LA LISTA DE ORDENES
+		
+		return add(choferNuevo);
+		
+	
+		
 	}
-
+		
 	@Override
-	public void delete(Long id) throws NotFoundException, BusinessException {
+	public void delete(long id) throws NotFoundException, BusinessException {
 		try {
 			choferDAO.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
@@ -74,4 +118,5 @@ public class ChoferBusiness implements IChoferBusiness{
 		
 	}
 
+	
 }

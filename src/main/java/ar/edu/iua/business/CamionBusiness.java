@@ -106,10 +106,11 @@ public class CamionBusiness implements ICamionBusiness {
 		try {
 			if(camion.checkBasicData()==null)
 				return camionDAO.save(camion);
+			else 
+				throw new BusinessException();
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		return new Camion();
 		
 	}
 
@@ -118,8 +119,9 @@ public class CamionBusiness implements ICamionBusiness {
 		
 		Camion camionNuevo = new Camion();
 		Camion camionViejo = load(id);
-			System.out.println(camionViejo.getId() + camionViejo.getPatente());
-			if(camion.getPatente()==null || camion.getPatente().trim().length()==0)
+		
+		camionNuevo.setId(id);
+		if(camion.getPatente()==null || camion.getPatente().trim().length()==0)
 				camionNuevo.setPatente(camionViejo.getPatente());
 			else
 				camionNuevo.setPatente(camion.getPatente());
@@ -139,11 +141,12 @@ public class CamionBusiness implements ICamionBusiness {
 			else
 				camionNuevo.setCodigoexterno(camion.getCodigoexterno());
 			
-			/*if(camion.getCisternado().length==0)
+			/*
+			if(camion.getCisternado().length==0)
 				camionNuevo.setCisternado(camionViejo.getCisternado());
 			else
 				camionNuevo.setCisternado(camion.getCisternado());
-				*/
+			*/
 			
 		return add(camionNuevo);
 	}

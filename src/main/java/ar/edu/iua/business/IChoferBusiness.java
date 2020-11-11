@@ -9,15 +9,18 @@ import ar.edu.iua.model.Chofer;
 public interface IChoferBusiness {
 	
 	//public Camion load(Object object) throws NotFoundException, BusinessException;
-		public Chofer load(long id) throws NotFoundException, BusinessException;
+		public Chofer load(long id,long dni) throws NotFoundException, BusinessException;
 
 		public List<Chofer> list() throws BusinessException;
 		
 		public Chofer add (Chofer chofer) throws BusinessException;
 
-		public Chofer update(Chofer chofer) throws NotFoundException, BusinessException;
+		public Chofer update(Chofer chofer, long id) throws NotFoundException, BusinessException;
 		
-		public void delete(Long id) throws NotFoundException, BusinessException;
+		public void delete(long id) throws NotFoundException, BusinessException;
 
+		Chofer load(long id) throws NotFoundException, BusinessException;
+		
+		
 
 }
