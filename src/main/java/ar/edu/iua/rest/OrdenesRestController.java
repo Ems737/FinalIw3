@@ -1,20 +1,18 @@
-/*package ar.edu.iua.rest;
+package ar.edu.iua.rest;
 
 import ar.edu.iua.business.IOrdenBusiness;
 import ar.edu.iua.business.exception.BusinessException;
-import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Orden;
+import ar.edu.iua.model.dto.MensajeRespuesta;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 // 5 - con el @RestController le decimos a esta clase que es la controladora en donde una direccion http como localhost:8080/ordens/v1/1 nos devuelva un objeto para mapear
 // RequestMapping se usa para decir que los metodos que escribo en esta clase (los resultados) entran por la URL definida en constantes
@@ -25,13 +23,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = Constantes.URL_ORDENES)
-public class OrdenesRestController extends BaseRestController {
+public class OrdenesRestController{
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
 	private IOrdenBusiness ordenBusiness;
-
+/*
 	@GetMapping(value = { "" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Orden>> list() {
 		try {
@@ -41,8 +39,24 @@ public class OrdenesRestController extends BaseRestController {
 			return new ResponseEntity<List<Orden>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+*/
+	//http://localhost:8080/api/final/ordenes/integracion
+	@PostMapping(value = { "/integracion" }, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MensajeRespuesta> load(@RequestBody Orden orden) {
+		try {
+				MensajeRespuesta r = ordenBusiness.recibir(orden).getMensaje();
+				if (r.getCodigo() == 0) {
+					return new ResponseEntity<MensajeRespuesta>(r, HttpStatus.OK);
+				} else {
+					return new ResponseEntity<MensajeRespuesta>(r, HttpStatus.BAD_REQUEST);
 
-	// curl -X POST "http://localhost:8080/api/v1/ordens" -H "Content-Type: application/json" -d '{"nombre":"Arroz","descripcion":"Arroz que no se pasa","precioLista":89.56,"enStock":true, "ordenDetalle":'{"detalle":"Light"}'}' -v
+				}
+			} catch (BusinessException e) {
+				log.error(e.getMessage(), e);
+				return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+	}
+/*	
 	@PostMapping(value = { "" }, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> add(@RequestBody Orden orden) {
 		try {
@@ -96,8 +110,7 @@ public class OrdenesRestController extends BaseRestController {
 			return new ResponseEntity<String>(HttpStatus.NOT_FOUND);
 		}
 	}
-
+*/
 			
 			
 }
-*/

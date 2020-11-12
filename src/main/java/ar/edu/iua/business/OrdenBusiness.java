@@ -1,11 +1,9 @@
-/*package ar.edu.iua.business;
+package ar.edu.iua.business;
 
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import ar.edu.iua.business.exception.BusinessException;
@@ -22,117 +20,66 @@ import ar.edu.iua.model.persistence.OrdenRepository;
 @Service
 public class OrdenBusiness implements IOrdenBusiness {
 
-	
+	@Autowired
+	private ICamionBusiness camionService;
+
 	@Autowired
 	private OrdenRepository ordenDAO;
-
+	
 	@Override
-	public Orden load(Long id) throws BusinessException, NotFoundException {
-		Optional<Orden> op;
-		try {
-			op = ordenDAO.findById(id);
+	public RespuestaGenerica<Orden> recibir(Orden orden) throws BusinessException {
 
+		MensajeRespuesta m = new MensajeRespuesta();
+		RespuestaGenerica<Orden> r = new RespuestaGenerica<Orden>(orden, m);
+
+		//Si checBasicData devuelve "null" es porque todos los datos recibidos son correctos
+		String mensajeCheck = orden.checkBasicData();
+		if (mensajeCheck != null) {
+			m.setCodigo(-1);
+			m.setMensaje(mensajeCheck);
+			return r;
+		}
+
+		//Si se recibio bien la Orden, entonces actualizo los datos en la base de datos y los guardo
+		try {
+			orden.setCamion(camionService.asegurarCamion(orden.getCamion()));
+			orden.setFechaHora(new Date());
+			ordenDAO.save(orden);
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		if (!op.isPresent())
-			throw new NotFoundException("No se encuentra el orden id=" + id);
-		return op.get();
+
+		return r;
+	}
+
+	@Override
+	public Orden load(Long id) throws BusinessException, NotFoundException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public List<Orden> list() throws BusinessException {
-		try {
-			return ordenDAO.findAll();
-		} catch (Exception e) {
-			throw new BusinessException(e);
-		}
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public Orden save(Orden orden) throws BusinessException {
-		try {
-			return ordenDAO.save(orden);
-		} catch (Exception e) {
-			throw new BusinessException(e);
-		}
+	public Orden save(Orden producto) throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
-	public void delete(Long id) throws BusinessException,NotFoundException {
-		try {
-			ordenDAO.deleteById(id);
-		} catch (EmptyResultDataAccessException e1) {
-			throw new NotFoundException("No se encuentra el orden id=" + id);
-		} catch (Exception e) {
-			throw new BusinessException(e);
-		}
-	}
-	
-	@Override
-    public Orden add(Orden orden) throws BusinessException {
-        try {
-            return ordenDAO.save(orden);
-        } catch (Exception e) {
-            throw new BusinessException(e);
-        }
-    }
-/*	
-	@Override
-    public Orden update(Orden producto, Long id) throws NotFoundException, BusinessException {
-        Orden op;
-        try {
-    	op = load(id);
-        } catch(Exception e) {
-        	throw new BusinessException(e);
-        }
-    	if(producto.getNombre()!=null){
-    		op.setNombre(producto.getNombre());
-    	}
-    	if(producto.getDescripcion()!=null){
-    		op.setDescripcion(producto.getDescripcion());
-    	}
-    	op.setEnStock(producto.isEnStock());
-    	
-    	return add(op);
-    	
-    }
-
-	@Override
-	public Orden load(String codigoExterno) throws NotFoundException, BusinessException {
-		Optional<Orden> or;
-		try {
-			or = ordenDAO.findFirstByCodigoExterno(codigoExterno);
-		} catch (Exception e) {
-			throw new BusinessException(e);
-		}
-		if (!or.isPresent()) {
-			throw new NotFoundException(
-					"La Orden con código externo " + codigoExterno + " no se encuentra en la BD");
-		}
-		return or.get();
+	public void delete(Long id) throws BusinessException, NotFoundException {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public Orden asegurarOrden(Orden orden, Cliente cliente, Camion camion, Chofer chofer, Producto producto)
-			throws BusinessException {
-		Orden o = null;
-		try {
-			//Probamos cargar desde la BD una O a traves del codigoExterno
-			o = load(orden.getCodigoExterno());
-			//Establecemos los nuevos valores en el camion guardado en la BD
-			o.setCliente(cliente);
-			o.setCamion(camion);
-			o.setChofer(chofer);
-			o.setProducto(producto);
-			o.setPreset(orden.getPreset());
-			o.setTurno(orden.getTurno());
-			// Colocar aquí los datos recibidos no opcionales
-		} catch (NotFoundException e) {
-			o = new Orden(orden, cliente, camion, chofer, producto);
-		}
-		return ordenDAO.save(o);
-
+	public Orden add(Orden orden) throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
@@ -142,25 +89,16 @@ public class OrdenBusiness implements IOrdenBusiness {
 	}
 
 	@Override
-	public RespuestaGenerica<Orden> recibir(Orden orden) throws BusinessException {
-		
-		MensajeRespuesta m = new MensajeRespuesta();
-		RespuestaGenerica<Orden> = new RespuestaGenerica<Orden>(orden,m);
-		
-		String mensajeCheck = orden.checkBasicData();
-		
-		if(mensajeCheck!=null)
-		{
-			m.setCodigo(-1);
-			m.setMensaje(mensajeCheck);
-		}
-		
-		
+	public Orden load(String codigoExterno) throws NotFoundException, BusinessException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	
-	
-	
-}
-*/
+	@Override
+	public Orden asegurarOrden(Orden orden, Cliente cliente, Camion camion, Chofer chofer, Producto producto)
+			throws BusinessException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+}

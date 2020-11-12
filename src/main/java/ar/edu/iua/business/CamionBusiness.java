@@ -21,7 +21,7 @@ public class CamionBusiness implements ICamionBusiness {
 	private CamionRepository camionDAO; 
 	
 	@Override
-		public Camion load(String patente, long id) throws NotFoundException, BusinessException {
+		public Camion load(String patente, Long id) throws NotFoundException, BusinessException {
 			Optional<Camion> camion; 
 			try {
 					if(patente !="*" && id == 0)
@@ -39,7 +39,7 @@ public class CamionBusiness implements ICamionBusiness {
 		}
 	
 	@Override
-	public Camion load(long id) throws NotFoundException, BusinessException {
+	public Camion load(Long id) throws NotFoundException, BusinessException {
 		Optional<Camion> camion; 
 		try {
 				
@@ -92,6 +92,7 @@ public class CamionBusiness implements ICamionBusiness {
 		
 	}
 */
+
 	@Override
 	public List<Camion> list() throws BusinessException {
 		try {
@@ -104,12 +105,12 @@ public class CamionBusiness implements ICamionBusiness {
 	@Override
 	public Camion add(Camion camion) throws BusinessException {
 		try {
-			if(camion.checkBasicData()==null)
+			//if(camion.checkBasicData()==null)
 				return camionDAO.save(camion);
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		return new Camion();
+		//return new Camion();
 		
 	}
 
@@ -134,10 +135,10 @@ public class CamionBusiness implements ICamionBusiness {
 			else 
 				camionNuevo.setDescripcion(camion.getDescripcion());
 			
-			if(camion.getCodigoexterno()==null || camion.getCodigoexterno().trim().length()==0)
-				camionNuevo.setCodigoexterno(camionViejo.getCodigoexterno());
+			if(camion.getCodigoExterno()==null || camion.getCodigoExterno().trim().length()==0)
+				camionNuevo.setCodigoexterno(camionViejo.getCodigoExterno());
 			else
-				camionNuevo.setCodigoexterno(camion.getCodigoexterno());
+				camionNuevo.setCodigoexterno(camion.getCodigoExterno());
 			
 			/*if(camion.getCisternado().length==0)
 				camionNuevo.setCisternado(camionViejo.getCisternado());
@@ -160,6 +161,39 @@ public class CamionBusiness implements ICamionBusiness {
 		}
 		
 	}
+	
+	@Override
+	public Camion load(String codigoExterno) throws NotFoundException, BusinessException {
+		Optional<Camion> op;
+		try {
+			op = camionDAO.findFirstByCodigoExterno(codigoExterno);
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+		if (!op.isPresent()) {
+			throw new NotFoundException(
+					"El camion con código externo " + codigoExterno + " no se encuentra en la BD");
+		}
+		return op.get();
+	} 
+	
+	//camion se recibe incompleto desde un sistema externo.
+		//Probamos cargar desde la BD un camion a traves del codigoExterno
+		//Establecemos los nuevos valores en el camion guardado en la BD
+		//Si no esta en la BD se crea un nuevo camion con los datos externos recibidos
+		
+		@Override
+		public Camion asegurarCamion(Camion camion) throws BusinessException {
+			Camion p = null;
+			try {
+				p = load(camion.getCodigoExterno());
+				p.setPatente(camion.getPatente());
+				p.setDescripcion(camion.getDescripcion());
+			} catch (NotFoundException e) {
+				p = new Camion(camion);
+			}
+			return camionDAO.save(p);
+		}
 	
 	
 

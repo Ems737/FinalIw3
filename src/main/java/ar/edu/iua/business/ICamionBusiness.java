@@ -8,11 +8,10 @@ import ar.edu.iua.model.Camion;
 
 public interface ICamionBusiness {
 
-	public Camion load(String patente, long id) throws NotFoundException, BusinessException;
-	public Camion load(long id) throws NotFoundException, BusinessException;
-	//public Camion load(Object object) throws NotFoundException, BusinessException;
-	//public Camion load(long id) throws NotFoundException, BusinessException;
-
+	public Camion load(String patente, Long id) throws NotFoundException, BusinessException;
+	
+	public Camion load(Long id) throws NotFoundException, BusinessException;
+	
 	public List<Camion> list() throws BusinessException;
 	
 	public Camion add (Camion camion) throws BusinessException;
@@ -21,8 +20,8 @@ public interface ICamionBusiness {
 	
 	public void delete(Long id) throws NotFoundException, BusinessException;
 
-
-
+	public Camion load(String codigoExterno) throws NotFoundException, BusinessException;
 	
-
+	public Camion asegurarCamion(Camion camion) throws BusinessException;
+	
 }

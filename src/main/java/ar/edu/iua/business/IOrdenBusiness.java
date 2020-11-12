@@ -32,6 +32,5 @@ public interface IOrdenBusiness {
 	
 	public RespuestaGenerica<Orden> recibir(Orden orden) throws BusinessException;
 	
-	
 
 }

@@ -11,7 +11,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="numeroOrden")
+@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class)
 
 
 public class Orden implements Serializable {
@@ -19,16 +19,19 @@ public class Orden implements Serializable {
 	private static final long serialVersionUID = 451621105748580924L;
 
 	@Id
+	@Column(unique=true)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long numeroOrden;
+	private Long id;
 	
+	
+
 	@Column()
 	private double preset;
 	@Column()
 	private double pesajeInicial; 
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "camion_id")
+    @JoinColumn(name = "camiones_id")
 	private Camion camion; 
 	@ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "cliente_id")
@@ -61,6 +64,10 @@ public class Orden implements Serializable {
 	@Column(columnDefinition = "DATETIME")
 	private Date fechaHoraPesajeFinal; 
 	
+	//Fecha donde ingresa primeramente la orden
+	@Column(columnDefinition = "DATETIME NOT NULL")
+	private Date fechaHora;
+	
 	@Column(length=5)
 	private int password; 
 	
@@ -83,20 +90,19 @@ public class Orden implements Serializable {
 	@Column()
 	private double promedioCaudal; 
 	
-	//Codigo de integracion 
+	/*//Codigo de integracion 
 	@Column(length=50, nullable=false, unique=true)
 	private String codigoExterno; 
-	
-	
-	
-	public long getNumeroOrden() {
-		return numeroOrden;
+	*/
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setNumeroOrden(long numeroOrden) {
-		this.numeroOrden = numeroOrden;
+	public void setId(Long id) {
+		this.id = id;
 	}
-
+	
 	public double getPreset() {
 		return preset;
 	}
@@ -264,7 +270,16 @@ public class Orden implements Serializable {
 	public void setPromedioCaudal(double promedioCaudal) {
 		this.promedioCaudal = promedioCaudal;
 	}
-
+	
+	public void setFechaHora(Date date) {
+		this.fechaHora=date;
+		
+	}
+	
+	public Date getFechaHora() {
+		return fechaHora;
+	}
+/*
 	public String getCodigoExterno() {
 		return codigoExterno;
 	}
@@ -272,9 +287,11 @@ public class Orden implements Serializable {
 	public void setCodigoExterno(String codigoExterno) {
 		this.codigoExterno = codigoExterno;
 	}
-
+*/
 	
 
+
+	/*
 	public Orden(Orden orden, Cliente cliente, Camion camion, Chofer chofer, Producto producto) {
 		this.codigoExterno = orden.codigoExterno;
 		this.numeroOrden = orden.getNumeroOrden();
@@ -287,27 +304,38 @@ public class Orden implements Serializable {
 		this.turno = orden.getTurno();
 	
 	}
-	
+*/	
 	public String checkBasicData(){
 		
-		if(getCodigoExterno()==null || getCodigoExterno().trim().length()==0)
+		//if(getCodigoExterno()==null || getCodigoExterno().trim().length()==0)
+		//	return "El codigo externo es obligatorio";
+		//if(getId()<=0)
+		//	return "El numero de orden es obligatorio";
+		
+		if(getCamion()==null)
+			return "El atributo camion es obligatorio";
+		
+		if(getCamion().getCodigoExterno()==null || getCamion().getCodigoExterno().trim().length()==0)
 			return "El codigo externo es obligatorio";
+		
 		if(getCamion().getPatente()==null|| getCamion().getPatente().trim().length()==0)
-			return "El atributo camion.patente es obligatorio";
-		if(getNumeroOrden()==0.0 || getNumeroOrden()<0)
-			return "El numero de orden es obligatorio";
-		if(getPreset()==0.0 || getPreset()<0)
-			return "El present es obligatorio";
-		if(getCliente().getRazonSocial()==null || getCliente().getRazonSocial().trim().length()==0)
-			return "El atributo cliente.razonSocial es obligatorio";
+			return "La patente del camion es obligatoria";
 		
-		if(getChofer().getDni()==0)
-			return "El atributo chofer.dni es obligatorio";
-		if(getProducto().getNombre()==null || getProducto().getNombre().trim().length()==0)
-			return "El atributo producto.nombre es obligatorio";
+		if(getCamion().getDescripcion()==null || getCamion().getDescripcion().trim().length()==0)
+			return "La descripcion del camion es obligatorio";
 		
-		if(getTurno()==null || getTurno().trim().length()==0)
-			return "El turno es un atributo obligatorio"; 
+	//	  if(getPreset()==0.0 || getPreset()<0)
+	//		return "El present es obligatorio";
+		//if(getCliente().getRazonSocial()==null || getCliente().getRazonSocial().trim().length()==0)
+		//	return "El atributo cliente.razonSocial es obligatorio";
+		
+		//if(getChofer().getDni()==0)
+		//	return "El atributo chofer.dni es obligatorio";
+		//if(getProducto().getNombre()==null || getProducto().getNombre().trim().length()==0)
+		//	return "El atributo producto.nombre es obligatorio";
+		
+		//if(getTurno()==null || getTurno().trim().length()==0)
+		//	return "El turno es un atributo obligatorio"; 
 	
 		return null; 
 	}

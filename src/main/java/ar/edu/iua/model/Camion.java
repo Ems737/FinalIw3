@@ -2,6 +2,7 @@ package ar.edu.iua.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -34,14 +35,26 @@ public class Camion implements Serializable{
     private double cisternado[];
     
     @Column(length = 50, nullable = true, unique = true)
-    private String codigoexterno; 
+    private String codigoExterno; 
 
     //VER
     @OneToMany(targetEntity=Orden.class, mappedBy="camion", fetch = FetchType.LAZY)
     @JsonBackReference
+    @JsonIgnore
     private List<Orden> ordenList;
     
-    //Getters y setters
+    public Camion() {
+		// TODO Auto-generated constructor stub
+	}
+    
+  	public Camion(Camion camion) {
+  		this.codigoExterno = camion.codigoExterno;
+  		this.patente = camion.patente;
+  		this.descripcion = camion.descripcion;
+  		
+  		//Aquí el resto de los datos a copiar
+  	}
+
 	public long getId() {
 		return id;
 	}
@@ -83,23 +96,23 @@ public class Camion implements Serializable{
 	}
 
 
-	public String getCodigoexterno() {
-		return codigoexterno;
+	public String getCodigoExterno() {
+		return codigoExterno;
 	}
 
 
-	public void setCodigoexterno(String codigoexterno) {
-		this.codigoexterno = codigoexterno;
+	public void setCodigoexterno(String codigoExterno) {
+		this.codigoExterno = codigoExterno;
 	}
 
-	public String checkBasicData(){
+	/*public String checkBasicData(){
 	
 		if(getPatente() == null || getPatente().trim().length()==0 || getPatente().trim().length()<6 )
 			return "La patente es un atributo obligatorio";
 		return null;
 	
 	}
-	
+	*/
 	
     
     
