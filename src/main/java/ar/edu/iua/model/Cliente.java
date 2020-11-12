@@ -30,10 +30,10 @@ public class Cliente implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column()
+	@Column(nullable = false)
 	private String razonSocial; 
 	
-	@Column()
+	@Column(nullable = false)
 	private long contacto; 
 	
 	@OneToMany(targetEntity=Orden.class, mappedBy="cliente", fetch = FetchType.LAZY)
@@ -73,7 +73,17 @@ public class Cliente implements Serializable {
 	}
 	
 	
-	
+	public String checkBasicData()
+	{
+		if(getRazonSocial().length()==0)
+			return "La razon social es un atributo obligatorio";
+		
+		if(getContacto()==0)
+			return "El contacto es un atributo obligatorio";
+		
+		return null; 
+		
+	}
 	
 
 }
