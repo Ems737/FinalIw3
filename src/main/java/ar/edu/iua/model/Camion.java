@@ -100,7 +100,18 @@ public class Camion implements Serializable{
 	
 	}
 	
+	public Camion (Camion camion)
+	{
+		this.codigoexterno = camion.getCodigoexterno();
+		this.patente = camion.getPatente();
+		this.cisternado = camion.getCisternado();
+		
+	}
 	
+	public Camion()
+	{
+		
+	}
     
     
 }

@@ -33,6 +33,9 @@ public class Producto implements Serializable {
 
 	@Column()
 	private String descripcion;
+	
+	@Column(length = 50, nullable = true, unique = true)
+    private String codigoexterno; 
 
 	public long getId() {
 		return id;
@@ -57,6 +60,15 @@ public class Producto implements Serializable {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
+	
+
+	public String getCodigoexterno() {
+		return codigoexterno;
+	}
+
+	public void setCodigoexterno(String codigoexterno) {
+		this.codigoexterno = codigoexterno;
+	}
 
 	public String checkBasicData() {
 		if (getNombre().equals(null) || getNombre().trim().length() == 0)
@@ -65,5 +77,15 @@ public class Producto implements Serializable {
 		return null;
 
 	}
+	
+	public Producto(Producto producto) {
+		this.codigoexterno = producto.getCodigoexterno();
+		this.nombre = producto.getNombre();
+	}
+	
+	public Producto() {
+		
+	}
+	
 
 }

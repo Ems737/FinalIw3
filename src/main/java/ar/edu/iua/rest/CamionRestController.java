@@ -49,35 +49,6 @@ public class CamionRestController {
 					}
 				}
 		
-		/*
-		//curl "http://localhost:8080/api/v1/camiones/1"
-		@GetMapping(value = "/{atributo}", produces = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<Camion> load(@PathVariable(name = "atributo")Object object) {
-			try {
-				return new ResponseEntity<Camion>(camionBusiness.load(object),HttpStatus.OK);
-			} catch (BusinessException e) {
-				return new ResponseEntity<Camion>(HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch (NotFoundException e) {
-				return new ResponseEntity<Camion>(HttpStatus.NOT_FOUND);
-			}
-		}*/
-		
-		
-	
-		
-		/*
-		//curl "http://localhost:8080/api/v1/camiones/1"
-		@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-		public ResponseEntity<Camion> load(@PathVariable(name = "id")long id) {
-			try {
-				return new ResponseEntity<Camion>(camionBusiness.load(id),HttpStatus.OK);
-			} catch (BusinessException e) {
-				return new ResponseEntity<Camion>(HttpStatus.INTERNAL_SERVER_ERROR);
-			} catch (NotFoundException e) {
-				return new ResponseEntity<Camion>(HttpStatus.NOT_FOUND);
-			}
-		}
-		*/
 
 		@GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
 		public ResponseEntity<List<Camion>> list(){
@@ -126,6 +97,14 @@ public class CamionRestController {
 			}
 		}
 
+		@PutMapping(value = "/integracion", produces = MediaType.APPLICATION_JSON_VALUE)
+		public ResponseEntity<Camion> integracion(@RequestBody Camion camion){
+			try {
+				return new ResponseEntity<Camion>(camionBusiness.asegurarCamion(camion),HttpStatus.OK);
+			} catch (BusinessException e) {
+				return new ResponseEntity<Camion>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 		
 		
 		

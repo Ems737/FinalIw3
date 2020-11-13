@@ -18,27 +18,30 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(name="clientes")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@Table(name = "clientes")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 
 public class Cliente implements Serializable {
-	
+
 	private static final long serialVersionUID = 6736832429914967093L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(nullable = false)
-	private String razonSocial; 
-	
+	private String razonSocial;
+
 	@Column(nullable = false)
-	private long contacto; 
-	
-	@OneToMany(targetEntity=Orden.class, mappedBy="cliente", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Orden> ordenList;
+	private long contacto;
+
+	@OneToMany(targetEntity = Orden.class, mappedBy = "cliente", fetch = FetchType.LAZY)
+	@JsonBackReference
+	private List<Orden> ordenList;
+
+	@Column(length = 50, nullable = true, unique = true)
+	private String codigoexterno;
 
 	public long getId() {
 		return id;
@@ -71,19 +74,35 @@ public class Cliente implements Serializable {
 	public void setOrdenList(List<Orden> ordenList) {
 		this.ordenList = ordenList;
 	}
-	
-	
-	public String checkBasicData()
-	{
-		if(getRazonSocial().length()==0)
+
+	public String checkBasicData() {
+		if (getRazonSocial().length() == 0)
 			return "La razon social es un atributo obligatorio";
-		
-		if(getContacto()==0)
+
+		if (getContacto() == 0)
 			return "El contacto es un atributo obligatorio";
-		
-		return null; 
-		
+
+		return null;
+
+	}
+
+	public String getCodigoexterno() {
+		return codigoexterno;
+	}
+
+	public void setCodigoexterno(String codigoexterno) {
+		this.codigoexterno = codigoexterno;
 	}
 	
+	public Cliente(Cliente cliente)
+	{
+		this.codigoexterno = cliente.getCodigoexterno();
+		this.razonSocial = cliente.getRazonSocial(); 
+		this.contacto = cliente.getContacto();
+	}
+	public Cliente ()
+	{
+		
+	}
 
 }

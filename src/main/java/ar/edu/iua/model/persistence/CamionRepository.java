@@ -13,6 +13,8 @@ public interface CamionRepository extends JpaRepository<Camion, Long>{
 	
 	
 	Optional<Camion> findByPatente(String patente);
+	Optional<Camion> findByPatenteAndId(String patente,long id);
+	Optional<Camion> findFirstByCodigoexterno(String codigoExterno);
 	
 }
 

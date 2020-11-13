@@ -22,12 +22,14 @@ public class CamionBusiness implements ICamionBusiness {
 	
 	@Override
 		public Camion load(String patente, long id) throws NotFoundException, BusinessException {
-			Optional<Camion> camion; 
+			Optional<Camion> camion = null; 
 			try {
-					if(patente !="*" && id == 0)
+					if(!patente.equals("*") && id == 0)
 						camion = camionDAO.findByPatente(patente);
-					else 
+					if(patente.equals("*")&&(id!=0))
 						camion = camionDAO.findById(id);
+					if(!patente.equals("*")&&(id!=0))
+						camion = camionDAO.findByPatenteAndId(patente, id);
 					
 				} catch (Exception e) {
 					throw new BusinessException(e);
@@ -37,61 +39,7 @@ public class CamionBusiness implements ICamionBusiness {
 			
 			return camion.get(); 
 		}
-	
-	@Override
-	public Camion load(long id) throws NotFoundException, BusinessException {
-		Optional<Camion> camion; 
-		try {
-				
-					camion = camionDAO.findById(id);
-				
-			} catch (Exception e) {
-				throw new BusinessException(e);
-			} 
-		if(!camion.isPresent())
-			throw new NotFoundException("El camion no se encuentra en la BD");
-		
-		return camion.get(); 
-	}
-		
-	
-	/*//VER PORQUE NO FUNCIONA CON EL ID 
-	@Override
-	public Camion load(Object object) throws NotFoundException, BusinessException {
-		Optional<Camion> camion;
-		try {
-				
-				if(object.is)
-				if(object.getClass().getName().equals("java.lang.String"))
-					camion = camionDAO.findByPatente((String)object);
-				else
-					camion = camionDAO.findById((Long) object);
-			} catch (Exception e) {
-				throw new BusinessException(e);
-			} 
-		if(!camion.isPresent())
-			throw new NotFoundException("El camion no se encuentra en la BD");
-		
-		return camion.get(); 
-	}
-	*/
-	
-	/*
-	@Override
-	public Camion load(long id) throws NotFoundException, BusinessException {
-		Optional<Camion> camion;
-		try {
-				camion = camionDAO.findById(id);
-			} catch (Exception e) {
-				throw new BusinessException(e);
-			} 
-		if(!camion.isPresent())
-			throw new NotFoundException("El camion no se encuentra en la BD");
-		
-		return camion.get(); 
-		
-	}
-*/
+
 	@Override
 	public List<Camion> list() throws BusinessException {
 		try {
@@ -118,7 +66,7 @@ public class CamionBusiness implements ICamionBusiness {
 	public Camion update(Camion camion, Long id) throws NotFoundException, BusinessException {
 		
 		Camion camionNuevo = new Camion();
-		Camion camionViejo = load(id);
+		Camion camionViejo = load("*",id);
 		
 		camionNuevo.setId(id);
 		if(camion.getPatente()==null || camion.getPatente().trim().length()==0)
@@ -162,6 +110,32 @@ public class CamionBusiness implements ICamionBusiness {
 			throw new BusinessException(e);
 		}
 		
+	}
+
+	@Override
+	public Camion load(String codigoExterno) throws NotFoundException, BusinessException {
+		Optional<Camion> camion; 
+		try {
+			camion = camionDAO.findFirstByCodigoexterno(codigoExterno);
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+		if(!camion.isPresent())
+			throw new NotFoundException("El producto con codigo externo " + codigoExterno + " no se encuentra en la BD");
+		return camion.get(); 
+	}
+
+	@Override
+	public Camion asegurarCamion(Camion camion) throws BusinessException {
+		Camion c = null;
+		try {
+			c = load(camion.getCodigoexterno());
+			c.setPatente(camion.getPatente());
+			c.setCisternado(camion.getCisternado());
+		} catch (NotFoundException e) {
+			c = new Camion(camion);
+		}
+		return camionDAO.save(c);
 	}
 	
 	

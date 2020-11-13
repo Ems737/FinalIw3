@@ -35,6 +35,7 @@ public class ProductoRestController {
 						@RequestParam(name = "nombre", required = false, defaultValue = "*") String nombre,
 						@RequestParam(name = "id", required = false, defaultValue = "0") long id){
 					try {
+						System.out.println(nombre + id);
 						return new ResponseEntity<Producto>(productoBusiness.load(id,nombre),HttpStatus.OK);
 					} catch (BusinessException e) {
 						return new ResponseEntity<Producto>(HttpStatus.INTERNAL_SERVER_ERROR);

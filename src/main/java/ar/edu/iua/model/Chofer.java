@@ -42,6 +42,9 @@ public class Chofer implements Serializable {
 	@Column()
 	private String apellido;
 	
+	@Column(length = 50, nullable = true, unique = true)
+    private String codigoexterno; 
+	
 	public long getId() {
 		return id;
 	}
@@ -73,6 +76,12 @@ public class Chofer implements Serializable {
 		this.apellido = apellido;
 	} 
 	
+	public String getCodigoexterno() {
+		return codigoexterno;
+	}
+	public void setCodigoexterno(String codigoexterno) {
+		this.codigoexterno = codigoexterno;
+	}
 	public String checkBasicData()
 	{
 		if(getDni()==0)
@@ -80,6 +89,17 @@ public class Chofer implements Serializable {
 		return null; 
 	}
 	
+	
+	public Chofer(Chofer chofer)
+	{
+		this.codigoexterno = chofer.codigoexterno;
+		this.apellido = chofer.getApellido();
+		this.dni = chofer.getDni();
+		this.nombre = chofer.getNombre();
+	}
+	public Chofer() {
+		
+	}
 	
 	
 	

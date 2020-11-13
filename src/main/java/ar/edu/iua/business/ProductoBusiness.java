@@ -12,49 +12,34 @@ import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Producto;
 import ar.edu.iua.model.persistence.ProductoRepository;
 
-
-
 @Service
-public class ProductoBusiness implements IProductoBusiness{
-	
+public class ProductoBusiness implements IProductoBusiness {
+
 	@Autowired
 	private ProductoRepository productoDAO;
 
 	@Override
-	public Producto load(long id,String nombre) throws NotFoundException, BusinessException {
-		Optional<Producto> producto;
+	public Producto load(long id, String nombre) throws NotFoundException, BusinessException {
+		Optional<Producto> producto = null;
 		try {
-				if(id!=0&& nombre.equals("*"))
-					producto = productoDAO.findById(id);
-				if(id==0 && nombre!="*")
-					producto = productoDAO.findByNombre(nombre); 
-				else
-					throw new BusinessException();
-			} catch (Exception e) {
-				throw new BusinessException(e);
-			} 
-		if(!producto.isPresent())
+			System.out.println(nombre + " " + id);
+			if (id != 0 && nombre.equals("*"))
+				producto = productoDAO.findById(id);
+			if (id == 0 && !nombre.equals("*"))
+				producto = productoDAO.findByNombre(nombre);
+			if (id != 0 && (!nombre.equals("*")))
+				producto = productoDAO.findByNombreAndId(nombre, id);
+
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+		if (!producto.isPresent())
 			throw new NotFoundException("El Chofer no se encuentra en la BD");
-		
-		return producto.get(); 
-	}
-	
-	@Override
-	public Producto load(long id) throws NotFoundException, BusinessException {
-		Optional<Producto> producto; 
-		try {
-				
-					producto = productoDAO.findById(id);
-				
-			} catch (Exception e) {
-				throw new BusinessException(e);
-			} 
-		if(!producto.isPresent())
-			throw new NotFoundException("El camion no se encuentra en la BD");
-		
-		return producto.get(); 
+
+		return producto.get();
 	}
 
+	
 	@Override
 	public List<Producto> list() throws BusinessException {
 		try {
@@ -67,38 +52,38 @@ public class ProductoBusiness implements IProductoBusiness{
 	@Override
 	public Producto add(Producto producto) throws BusinessException {
 		try {
-			
-			if(producto.checkBasicData()==null)
+
+			if (producto.checkBasicData() == null)
 				return productoDAO.save(producto);
 			else
 				throw new BusinessException();
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		
+
 	}
 
-	 @Override
+	@Override
 	public Producto update(Producto producto, long id) throws NotFoundException, BusinessException {
 		Producto productoNuevo = new Producto();
-		Producto productoViejo = load(id);
-		
+		Producto productoViejo = load(id,"*");
+
 		productoNuevo.setId(id);
-		
-		if(producto.getDescripcion().equals(null) || producto.getDescripcion().trim().length()==0)
+
+		if (producto.getDescripcion().equals(null) || producto.getDescripcion().trim().length() == 0)
 			productoNuevo.setDescripcion(productoViejo.getDescripcion());
 		else
 			productoNuevo.setDescripcion(producto.getDescripcion());
-		
-		if(producto.getNombre().equals(null)|| producto.getNombre().trim().length()==0)
+
+		if (producto.getNombre().equals(null) || producto.getNombre().trim().length() == 0)
 			productoNuevo.setNombre(productoViejo.getNombre());
 		else
 			productoNuevo.setNombre(producto.getNombre());
-		
+
 		return add(productoNuevo);
-		
+
 	}
-		
+
 	@Override
 	public void delete(long id) throws NotFoundException, BusinessException {
 		try {
@@ -108,8 +93,35 @@ public class ProductoBusiness implements IProductoBusiness{
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		
+
 	}
 
-	
+
+	@Override
+	public Producto load(String codigoExterno) throws NotFoundException, BusinessException {
+		Optional<Producto> producto; 
+		try {
+			producto = productoDAO.findFirstByCodigoexterno(codigoExterno);
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+		if(!producto.isPresent())
+			throw new NotFoundException("El producto con codigo externo " + codigoExterno + " no se encuentra en la BD");
+		return producto.get(); 
+	}
+
+
+	@Override
+	public Producto asegurarProducto(Producto producto) throws BusinessException {
+		Producto p = null;
+		try {
+			p = load(producto.getCodigoexterno());
+			p.setNombre(producto.getNombre());
+			
+		} catch (NotFoundException e) {
+			p = new Producto(producto);
+		}
+		return productoDAO.save(p);
+	}
+
 }
