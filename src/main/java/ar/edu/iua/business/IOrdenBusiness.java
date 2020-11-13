@@ -2,12 +2,13 @@ package ar.edu.iua.business;
 
 
 import ar.edu.iua.business.exception.BusinessException;
+import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Orden;
 import ar.edu.iua.model.dto.RespuestaGenerica;
 
 public interface IOrdenBusiness {
 
-	/*public Orden load(Long id) throws BusinessException, NotFoundException;
+	/*
 
 	public List<Orden> list() throws BusinessException;
 
@@ -23,7 +24,9 @@ public interface IOrdenBusiness {
 	
 	public Orden asegurarOrden(Orden orden, Cliente cliente, Camion camion, Chofer chofer, Producto producto) throws BusinessException;
 	*/
-	public RespuestaGenerica<Orden> recibir(Orden orden) throws BusinessException;
+	public RespuestaGenerica<Orden> recibirEstadoUno(Orden orden) throws BusinessException;
+	public RespuestaGenerica<Orden> recibirEstadoDos(Orden orden, int nroOrden) throws BusinessException,NotFoundException;
+	public Orden load(int nroOrden) throws BusinessException, NotFoundException;
 	
 	
 

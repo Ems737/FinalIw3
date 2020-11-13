@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.io.Serializable;
-
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
 
 import javax.persistence.*;
 
@@ -20,7 +21,7 @@ public class Orden implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id; 
 	
-	@Column()
+	@Column(unique=true)
 	private int numeroOrden;
 
 	@Column()
@@ -260,15 +261,12 @@ public class Orden implements Serializable {
 		this.promedioCaudal = promedioCaudal;
 	}
 
-	public String checkBasicData() {
+	public String checkBasicDataStatusOne() {
 
-		if ((getNumeroOrden() == 0)|| (getNumeroOrden() < 0))
-		{
-			System.out.println("ESTOY ACA " + getNumeroOrden());
+		if ((getNumeroOrden() <= 0))
 			return "El numero de orden es obligatorio";
-		}
-		
-	
+		if(getTurno()==null)
+			return "El atributo turno es obligatorio";
 		if(getChofer()==null)
 			return "El atributo chofer es obligatorio"; 
 		if(getChofer().getCodigoexterno().equals(null) || getChofer().getCodigoexterno().trim().length()==0 )
@@ -293,10 +291,30 @@ public class Orden implements Serializable {
 			return "El atributo producto.codigoexterno es obligatorio";
 		if (getProducto().getNombre() == null || getProducto().getNombre().trim().length() == 0)
 			return "El atributo producto.nombre es obligatorio";
-		if ((getPreset() == 0.0 )|| (getPreset() < 0))
+		if ((getPreset() <= 0.0))
 			return "El preset es obligatorio";
 	
 		return "Ok para estado 1";
+	}
+	
+	public String checkBasicDataStatusTwo(int estado, Date turno)
+	{
+		
+		String fechaActual = new SimpleDateFormat("dd-MM-yyyy").format(new Date()); 
+		String horaActual = new SimpleDateFormat("HH-00-00").format(new Date());
+		String fechaTurno = new SimpleDateFormat("dd-MM-yyyy").format(turno);
+		String horaTurno = new SimpleDateFormat("HH-00-00").format(turno);
+		
+		if(!fechaActual.equals(fechaTurno))
+			return "El dia de carga no corresponde a la fecha del turno"; 
+		if(!horaActual.equals(horaTurno))
+			return "La hora de carga no corresponde a la hora del turno"; 
+		if(estado!=1)
+			return "Para realizar el pesaje inicial la orden debe estar en estado 1";
+		if(getPesajeInicial()<=0)
+			return "El atributo pesaje es obligatorio";
+		return "Ok para estado 2"; 
+		
 	}
 
 }

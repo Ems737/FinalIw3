@@ -1,15 +1,16 @@
 package ar.edu.iua.business;
 
-import java.util.Date;
 
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
 import ar.edu.iua.business.exception.BusinessException;
-
+import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Orden;
+
 
 import ar.edu.iua.model.dto.MensajeRespuesta;
 import ar.edu.iua.model.dto.RespuestaGenerica;
@@ -34,12 +35,12 @@ public class OrdenBusiness implements IOrdenBusiness {
 	private OrdenRepository ordenDAO;
 
 	@Override
-	public RespuestaGenerica<Orden> recibir(Orden orden) throws BusinessException {
+	public RespuestaGenerica<Orden> recibirEstadoUno(Orden orden) throws BusinessException {
 
 		MensajeRespuesta m = new MensajeRespuesta();
 		RespuestaGenerica<Orden> rg = new RespuestaGenerica<Orden>(orden, m);
 
-		String mensajeCheck = orden.checkBasicData();
+		String mensajeCheck = orden.checkBasicDataStatusOne();
 
 		if (mensajeCheck != "Ok para estado 1") {
 			m.setCodigo(-1);
@@ -54,7 +55,7 @@ public class OrdenBusiness implements IOrdenBusiness {
 			orden.setCliente(clienteService.asegurarCliente(orden.getCliente()));
 			orden.setChofer(choferService.asegurarChofer(orden.getChofer()));
 			orden.setProducto(productoService.asegurarProducto(orden.getProducto()));
-			orden.setTurno(new Date());
+			orden.setTurno(orden.getTurno());
 			orden.setPreset(orden.getPreset());
 			orden.setEstado(1);
 			ordenDAO.save(orden);
@@ -64,5 +65,51 @@ public class OrdenBusiness implements IOrdenBusiness {
 
 		return rg;
 
+	}
+
+	@Override
+	public RespuestaGenerica<Orden> recibirEstadoDos(Orden orden, int nroOrden) throws BusinessException, NotFoundException {
+
+		Orden ordenVieja = load(nroOrden); 
+		MensajeRespuesta m = new MensajeRespuesta();
+		RespuestaGenerica<Orden> rg = new RespuestaGenerica<Orden>(orden, m);
+
+		String mensajeCheck = orden.checkBasicDataStatusTwo(ordenVieja.getEstado(),ordenVieja.getTurno());
+
+		if (mensajeCheck != "Ok para estado 2") {
+			m.setCodigo(-1);
+			m.setMensaje(mensajeCheck);
+			return rg;
+		}
+
+		try {
+
+			
+			ordenVieja.setPesajeInicial(orden.getPesajeInicial());
+			ordenVieja.setPassword(orden.getPassword());
+			ordenVieja.setEstado(2);
+			ordenDAO.save(ordenVieja);
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+
+		return rg;
+
+	}
+
+	@Override
+	public Orden load(int nroOrden) throws BusinessException, NotFoundException {
+		Optional<Orden> orden = null;
+		try {
+
+			orden = ordenDAO.findByNumeroOrden(nroOrden);
+
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+		if (!orden.isPresent())
+			throw new NotFoundException("El orden no se encuentra en la BD");
+
+		return orden.get();
 	}
 }

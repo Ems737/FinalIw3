@@ -117,6 +117,7 @@ public class ProductoBusiness implements IProductoBusiness {
 		try {
 			p = load(producto.getCodigoexterno());
 			p.setNombre(producto.getNombre());
+			p.setDescripcion(producto.getDescripcion());
 			
 		} catch (NotFoundException e) {
 			p = new Producto(producto);

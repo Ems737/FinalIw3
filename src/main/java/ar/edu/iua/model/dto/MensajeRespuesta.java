@@ -3,7 +3,7 @@ package ar.edu.iua.model.dto;
 public class MensajeRespuesta {
 	
 	private int codigo;
-	private String mensaje;
+	private String mensaje = "OK";
 	
 	public MensajeRespuesta(int codigo, String mensaje) {
 		super();
