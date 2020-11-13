@@ -10,7 +10,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "numeroOrden")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 
 public class Orden implements Serializable {
 
@@ -18,6 +18,7 @@ public class Orden implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id; 
 	
 	@Column()
 	private int numeroOrden;
@@ -266,6 +267,7 @@ public class Orden implements Serializable {
 			System.out.println("ESTOY ACA " + getNumeroOrden());
 			return "El numero de orden es obligatorio";
 		}
+		
 	
 		if(getChofer()==null)
 			return "El atributo chofer es obligatorio"; 
