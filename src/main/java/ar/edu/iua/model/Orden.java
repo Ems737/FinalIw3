@@ -23,7 +23,8 @@ public class Orden implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	
+	@Column(unique=true)
+	private long numeroOrden;
 
 	@Column()
 	private double preset;
@@ -279,6 +280,14 @@ public class Orden implements Serializable {
 	public Date getFechaHora() {
 		return fechaHora;
 	}
+	
+	public long getNumeroOrden() {
+		return numeroOrden;
+	}
+
+	public void setNumeroOrden(long numeroOrden) {
+		this.numeroOrden = numeroOrden;
+	}
 /*
 	public String getCodigoExterno() {
 		return codigoExterno;
@@ -309,36 +318,48 @@ public class Orden implements Serializable {
 		
 		//if(getCodigoExterno()==null || getCodigoExterno().trim().length()==0)
 		//	return "El codigo externo es obligatorio";
-		//if(getId()<=0)
-		//	return "El numero de orden es obligatorio";
+		if(this.getNumeroOrden()<=0)
+			return "El numero de orden es obligatorio";
 		
 		if(getCamion()==null)
-			return "El atributo camion es obligatorio";
-		
+			return "El Camion es obligatorio";
 		if(getCamion().getCodigoExterno()==null || getCamion().getCodigoExterno().trim().length()==0)
-			return "El codigo externo es obligatorio";
-		
+			return "El codigo externo del Camion es obligatorio";
 		if(getCamion().getPatente()==null|| getCamion().getPatente().trim().length()==0)
 			return "La patente del camion es obligatoria";
 		
-		if(getCamion().getDescripcion()==null || getCamion().getDescripcion().trim().length()==0)
-			return "La descripcion del camion es obligatorio";
+		if(getChofer()==null)
+			return "El Chofer es obligatorio";
+		if(getChofer().getCodigoExterno()==null || getCamion().getCodigoExterno().trim().length()==0)
+			return "El codigo externo del Chofer es obligatorio";
+		if(getChofer().getDni()<=0)
+			return "El Dni del chofer es obligatorio";
 		
-	//	  if(getPreset()==0.0 || getPreset()<0)
-	//		return "El present es obligatorio";
-		//if(getCliente().getRazonSocial()==null || getCliente().getRazonSocial().trim().length()==0)
-		//	return "El atributo cliente.razonSocial es obligatorio";
+		if(getCliente()==null)
+			return "El Cliente es obligatorio";
+		if(getCliente().getCodigoExterno()==null || getCliente().getCodigoExterno().trim().length()==0)
+			return "El codigo externo del Cliente es obligatorio";
+		if(getCliente().getRazonSocial()==null || getCliente().getRazonSocial().trim().length()==0)
+			return "La Razon Social del cliente es obligatoria";
 		
-		//if(getChofer().getDni()==0)
-		//	return "El atributo chofer.dni es obligatorio";
-		//if(getProducto().getNombre()==null || getProducto().getNombre().trim().length()==0)
-		//	return "El atributo producto.nombre es obligatorio";
+		if(getProducto()==null)
+			return "El Producto es obligatorio";
+		if(getProducto().getCodigoExterno()==null || getProducto().getCodigoExterno().trim().length()==0)
+			return "El codigo externo del Producto es obligatorio";
+		if(getProducto().getNombre()==null || getProducto().getNombre().trim().length()==0)
+			return "El Nombre del producto es obligatorio";
 		
-		//if(getTurno()==null || getTurno().trim().length()==0)
-		//	return "El turno es un atributo obligatorio"; 
+		if(getPreset()==0.0 || getPreset()<0)
+			return "El present es obligatorio";
+		if(getTurno()==null || getTurno().trim().length()==0)
+			return "El turno es un atributo obligatorio";
 	
+		int numero=1;
+		setEstado(numero);
 		return null; 
 	}
+
+	
 	
 	
     

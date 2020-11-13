@@ -36,6 +36,17 @@ public class Cliente implements Serializable {
 	@Column()
 	private long contacto; 
 	
+	@Column(length = 50, nullable = true, unique = true)
+    private String codigoExterno;
+	
+	public String getCodigoExterno() {
+		return codigoExterno;
+	}
+
+	public void setCodigoExterno(String codigoExterno) {
+		this.codigoExterno = codigoExterno;
+	}
+
 	@OneToMany(targetEntity=Orden.class, mappedBy="cliente", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Orden> ordenList;

@@ -33,6 +33,16 @@ public class Chofer implements Serializable {
 	@Column(nullable = false)
 	private long dni;
 	
+	@Column(length = 50, nullable = true, unique = true)
+    private String codigoExterno; 
+	
+	public String getCodigoExterno() {
+		return codigoExterno;
+	}
+	public void setCodigoExterno(String codigoExterno) {
+		this.codigoExterno = codigoExterno;
+	}
+
 	@OneToMany(targetEntity=Orden.class, mappedBy="chofer", fetch = FetchType.LAZY)
     @JsonBackReference
     private List<Orden> ordenList;

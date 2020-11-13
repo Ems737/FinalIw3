@@ -29,6 +29,17 @@ public class Producto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id; 
 	
+	@Column(length = 50, nullable = true, unique = true)
+    private String codigoExterno;
+	
+	public String getCodigoExterno() {
+		return codigoExterno;
+	}
+
+	public void setCodigoExterno(String codigoExterno) {
+		this.codigoExterno = codigoExterno;
+	}
+
 	@Column()
 	private String nombre; 
 	
