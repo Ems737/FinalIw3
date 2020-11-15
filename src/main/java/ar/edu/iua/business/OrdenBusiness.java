@@ -1,6 +1,7 @@
 package ar.edu.iua.business;
 
 
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
+import ar.edu.iua.model.DetalleOrden;
 import ar.edu.iua.model.Orden;
 
 
@@ -88,6 +90,7 @@ public class OrdenBusiness implements IOrdenBusiness {
 			ordenVieja.setPesajeInicial(orden.getPesajeInicial());
 			ordenVieja.setPassword(orden.getPassword());
 			ordenVieja.setEstado(2);
+			ordenVieja.setFechaHoraPesajeInicial(new Date());
 			ordenDAO.save(ordenVieja);
 		} catch (Exception e) {
 			throw new BusinessException(e);
@@ -111,5 +114,12 @@ public class OrdenBusiness implements IOrdenBusiness {
 			throw new NotFoundException("El orden no se encuentra en la BD");
 
 		return orden.get();
+	}
+
+	@Override
+	public RespuestaGenerica<Orden> cargarCamion(DetalleOrden detalleOrden)
+			throws BusinessException, NotFoundException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
