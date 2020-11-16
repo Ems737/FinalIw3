@@ -124,13 +124,13 @@ public class DetalleOrden implements Serializable {
 			return "La masa acumulada debe ser creciente";
 		if (getDensidad() == 0)
 			return "El atributo densidad es obligatorio";
-		if (getDensidad() < 0 || getDensidad() > 1) // VER
+		if (getDensidad() < 0 || getDensidad() > 1)
 			return "La densidad debe ser entre 0 y 1";
 		if (getTemperatura() == 0)
 			return "El atributo temperatura es obligatorio";
 		if (getTemperatura() < 0 || getTemperatura() > 40)
 			return "La temperatura debe ser mayor a 0 y menor que 40 grados.";
-		if (orden.getPreset() < getMasaAcumulada())
+		if (orden.getPreset() <= getMasaAcumulada())
 			return "Camion cargado";
 		return "Cargando camion";
 

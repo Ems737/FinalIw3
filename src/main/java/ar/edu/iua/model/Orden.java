@@ -334,9 +334,12 @@ public class Orden implements Serializable {
 
 		if (getPesajeFinal() == 0)
 			return "El atributo pesaje final es obligatorio";
-		if (getPesajeFinal() < orden.getPesajeInicial()
-				|| getPesajeFinal() < (orden.getPesajeInicial() + orden.getPreset()))
-			return "Pesaje final invalido";
+		if (getPesajeFinal() < orden.getPesajeInicial())
+			return "Pesaje final invalido. El peso del camion es menor al pesaje inicial";
+		if (getPesajeFinal() < (orden.getPesajeInicial() + orden.getPreset()) )
+			return "Pesaje final invalido. El peso del camion es menor que la carga realizada";
+		if (getPesajeFinal() > ((orden.getPesajeInicial() + orden.getPreset())+ 5) )
+			return "Pesaje final invalido. La carga del camion supera por mas de 5 kg al preset";
 		if (orden.getEstado() != 3)
 			return "Para realizar el pesaje final, la orden debe estar en estado 3";
 		return "Ok para pesaje final";

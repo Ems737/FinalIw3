@@ -23,9 +23,6 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 	private IOrdenBusiness ordenService;
 
 	@Autowired
-	private IDetalleOrdenBusiness detalleOrdenService;
-
-	@Autowired
 	private DetalleOrdenRepository detalleOrdenDAO;
 	@Autowired
 	private OrdenRepository ordenDAO;
@@ -56,7 +53,7 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 
 		String mensajeCheck = detalleOrden.checkBasicData(orden);
 
-		if (mensajeCheck != "Cargando camion") {
+		if ((mensajeCheck != "Cargando camion") && (mensajeCheck != "Camion cargado")) {
 			m.setCodigo(-1);
 			m.setMensaje(mensajeCheck);
 			return rg;
@@ -80,7 +77,7 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 					detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
 			orden.setFechaHoraFinCarga(new Date());
 
-			if (orden.getPreset() == detalleOrden.getMasaAcumulada())
+			if (orden.getPreset() <= detalleOrden.getMasaAcumulada())
 				orden.setEstado(3);
 			
 
