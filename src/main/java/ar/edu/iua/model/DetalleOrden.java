@@ -32,7 +32,7 @@ public class DetalleOrden implements Serializable {
 	private Date fechaHoraMedicion; 
 	
 	@ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "numeroOrden")
+    @JoinColumn(name = "id_orden")
 	private Orden orden;
 
 	public long getId() {
@@ -109,12 +109,16 @@ public class DetalleOrden implements Serializable {
 	
 	public String checkBasicData(Orden orden)
 	{
+		if(orden.getEstado()==3)
+			return "El camion esta cargado";
 		if(orden.getEstado()!=2)
 			return "Para comenzar a cargar el camion, la orden debe estar en estado 2";
 		if(getCaudal()==0)
 			return "El atributo caudal es obligatorio";
 		if(getCaudal()<0)
 			return "El caudal debe ser > 0";
+		if(getCaudal()<3000 || getCaudal()>5000)
+			return "El caudal debe estar entre 3000 y 5000 kg/h";
 		if(getMasaAcumulada()==0)
 			return "El atributo masa acumulada es obligatorio";
 		if(getMasaAcumulada()< orden.getUltimaMasaAcumulada())
@@ -125,9 +129,9 @@ public class DetalleOrden implements Serializable {
 			return "La densidad debe ser entre 0 y 1";
 		if(getTemperatura()==0)
 			return "El atributo temperatura es obligatorio";
-		if(getTemperatura()<0) // VER
-			return "La temperatura debe ser mayor a 0";
-		if(orden.getPreset()< getMasaAcumulada()) //esto deberia ser un endpoint
+		if(getTemperatura()<0 || getTemperatura()>40) 
+			return "La temperatura debe ser mayor a 0 y menor que 40 grados.";
+		if(orden.getPreset()<getMasaAcumulada()) 
 			return "Camion cargado"; 
 		return "Cargando camion"; 
 		

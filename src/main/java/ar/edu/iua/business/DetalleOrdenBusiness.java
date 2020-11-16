@@ -37,7 +37,7 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 		Optional<DetalleOrden> detalleOrden = null;
 		try {
 
-			detalleOrden = detalleOrdenDAO.findByid(id);
+			detalleOrden = detalleOrdenDAO.findById(id);
 
 		} catch (Exception e) {
 			throw new BusinessException(e);
@@ -72,17 +72,22 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 			detalleOrden.setTemperatura(detalleOrden.getTemperatura());
 			detalleOrden.setCaudal(detalleOrden.getCaudal());
 			detalleOrden.setFechaHoraMedicion(new Date());
-			
+			detalleOrdenDAO.save(detalleOrden);
 			
 			//MODIFICAMOS LA ORDEN 
-			//VER SI HACE IR ACUMULANDO
 			orden.setUltimaMasaAcumulada(detalleOrden.getMasaAcumulada());
 			orden.setUltimaDensidad(detalleOrden.getDensidad());
 			orden.setUltimaTemperatura(detalleOrden.getTemperatura());
 			orden.setUltimoCaudal(detalleOrden.getCaudal());
+			orden.setFechaHoraInicioCarga(detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
+			orden.setFechaHoraFinCarga(new Date());
+			
+			if(orden.getPreset() == detalleOrden.getMasaAcumulada())
+				orden.setEstado(3);
 			//VER EL TEMA DE LA HORA PORQUE ES EL PRIMER DETALLE VALIDO
 			
-			detalleOrdenDAO.save(detalleOrden);
+			
+			
 			ordenDAO.save(orden);
 		} catch (Exception e) {
 			throw new BusinessException();

@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
 import javax.persistence.*;
 
 @Entity
@@ -19,15 +18,17 @@ public class Orden implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id; 
-	
-	@Column(unique=true)
+	private int id;
+
+	@Column(unique = true)
 	private int numeroOrden;
 
 	@Column()
 	private double preset;
 	@Column()
 	private double pesajeInicial;
+	@Column()
+	private double pesajeFinal;
 
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "camion_id")
@@ -85,6 +86,10 @@ public class Orden implements Serializable {
 	@Column()
 	private double promedioCaudal;
 
+	public int getId() {
+		return id;
+	}
+
 	public int getNumeroOrden() {
 		return numeroOrden;
 	}
@@ -107,6 +112,15 @@ public class Orden implements Serializable {
 
 	public void setPesajeInicial(double pesajeInicial) {
 		this.pesajeInicial = pesajeInicial;
+	}
+
+	
+	public double getPesajeFinal() {
+		return pesajeFinal;
+	}
+
+	public void setPesajeFinal(double pesajeFinal) {
+		this.pesajeFinal = pesajeFinal;
 	}
 
 	public Camion getCamion() {
@@ -263,58 +277,71 @@ public class Orden implements Serializable {
 
 	public String checkBasicDataStatusOne() {
 
+		System.out.println(getNumeroOrden());
 		if ((getNumeroOrden() <= 0))
 			return "El numero de orden es obligatorio";
-		if(getTurno()==null)
+		if (getTurno() == null)
 			return "El atributo turno es obligatorio";
-		if(getChofer()==null)
-			return "El atributo chofer es obligatorio"; 
-		if(getChofer().getCodigoexterno().equals(null) || getChofer().getCodigoexterno().trim().length()==0 )
+		if (getChofer() == null)
+			return "El atributo chofer es obligatorio";
+		if (getChofer().getCodigoexterno().equals(null) || getChofer().getCodigoexterno().trim().length() == 0)
 			return "El atributo chofer.codigoexterno es obligatorio";
 		if (getChofer().getDni() == 0)
 			return "El atributo chofer.dni es obligatorio";
-		if(getCamion()==null)
-			return "El atributo camion es obligatorio"; 
-		if(getCamion().getCodigoexterno().equals(null) || getCamion().getCodigoexterno().trim().length()==0 )
+		if (getCamion() == null)
+			return "El atributo camion es obligatorio";
+		if (getCamion().getCodigoexterno().equals(null) || getCamion().getCodigoexterno().trim().length() == 0)
 			return "El atributo camion.codigoexterno es obligatorio";
 		if (getCamion().getPatente() == null || getCamion().getPatente().trim().length() == 0)
 			return "El atributo camion.patente es obligatorio";
-		if(getCliente()==null)
-			return "El atributo cliente es obligatorio"; 
-		if(getCliente().getCodigoexterno().equals(null) || getCliente().getCodigoexterno().trim().length()==0 )
+		if (getCliente() == null)
+			return "El atributo cliente es obligatorio";
+		if (getCliente().getCodigoexterno().equals(null) || getCliente().getCodigoexterno().trim().length() == 0)
 			return "El atributo cliente.codigoexterno es obligatorio";
 		if (getCliente().getRazonSocial() == null || getCliente().getRazonSocial().trim().length() == 0)
 			return "El atributo cliente.razonSocial es obligatorio";
-		if(getProducto()==null)
-			return "El atributo producto es obligatorio"; 
-		if(getProducto().getCodigoexterno().equals(null) || getProducto().getCodigoexterno().trim().length()==0 )
+		if (getProducto() == null)
+			return "El atributo producto es obligatorio";
+		if (getProducto().getCodigoexterno().equals(null) || getProducto().getCodigoexterno().trim().length() == 0)
 			return "El atributo producto.codigoexterno es obligatorio";
 		if (getProducto().getNombre() == null || getProducto().getNombre().trim().length() == 0)
 			return "El atributo producto.nombre es obligatorio";
 		if ((getPreset() <= 0.0))
 			return "El preset es obligatorio";
-	
+
 		return "Ok para estado 1";
 	}
-	
-	public String checkBasicDataStatusTwo(int estado, Date turno)
-	{
-		
-		String fechaActual = new SimpleDateFormat("dd-MM-yyyy").format(new Date()); 
+
+	public String checkBasicDataStatusTwo(int estado, Date turno) {
+
+		String fechaActual = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
 		String horaActual = new SimpleDateFormat("HH-00-00").format(new Date());
 		String fechaTurno = new SimpleDateFormat("dd-MM-yyyy").format(turno);
 		String horaTurno = new SimpleDateFormat("HH-00-00").format(turno);
-		
-		if(!fechaActual.equals(fechaTurno))
-			return "El dia de carga no corresponde a la fecha del turno"; 
-		if(!horaActual.equals(horaTurno))
-			return "La hora de carga no corresponde a la hora del turno"; 
-		if(estado!=1)
+
+		if (!fechaActual.equals(fechaTurno))
+			return "El dia de carga no corresponde a la fecha del turno";
+		if (!horaActual.equals(horaTurno))
+			return "La hora de carga no corresponde a la hora del turno";
+		if (estado != 1)
 			return "Para realizar el pesaje inicial la orden debe estar en estado 1";
-		if(getPesajeInicial()<=0)
+		if (getPesajeInicial() <= 0)
 			return "El atributo pesaje es obligatorio";
-		return "Ok para estado 2"; 
-		
+		return "Ok para estado 2";
+
 	}
 
+	public String checkBasicDataStatusThree(Orden orden, int nroOrden) {
+
+		if(getPesajeFinal()==0)
+			return "El atributo pesaje final es obligatorio"; 
+		if(getPesajeFinal() < orden.getPesajeInicial() || getPesajeFinal()<(orden.getPesajeInicial()+orden.getPreset()))
+			return "Pesaje final invalido";
+		if (orden.getEstado()!= 3)
+			return "Para realizar el pesaje final, la orden debe estar en estado 3";
+		return "Ok para pesaje final";
+
+	}
+	
+	
 }

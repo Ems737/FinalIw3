@@ -43,6 +43,8 @@ public class DetalleOrdenRestController {
 			}
 		} catch (BusinessException e) {
 			return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<MensajeRespuesta>(HttpStatus.NOT_FOUND);
 		}
 	}
 	

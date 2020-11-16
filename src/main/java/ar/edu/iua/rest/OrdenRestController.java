@@ -31,6 +31,7 @@ public class OrdenRestController {
 	public ResponseEntity<MensajeRespuesta> load(@RequestBody Orden orden) {
 
 		try {
+			System.out.println("recibo " + orden.getNumeroOrden());
 			MensajeRespuesta m = ordenBusiness.recibirEstadoUno(orden).getMensaje();
 			if (m.getCodigo() == 0) {
 				return new ResponseEntity<MensajeRespuesta>(m, HttpStatus.OK);
@@ -57,9 +58,47 @@ public class OrdenRestController {
 			}
 		} catch (BusinessException e) {
 			return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (NotFoundException e) {
+			return new ResponseEntity<MensajeRespuesta>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
+	@PostMapping(value = "/conciliacion/{nroOrden}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MensajeRespuesta> pesajeFinal(@RequestBody Orden orden, 
+			@PathVariable("nroOrden") int nroOrden) throws NotFoundException {
+
+		try {
+			MensajeRespuesta m = ordenBusiness.pesajeFinal(orden, nroOrden).getMensaje();
+			if (m.getCodigo() == 0) {
+				return new ResponseEntity<MensajeRespuesta>(m, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<MensajeRespuesta>(m, HttpStatus.BAD_REQUEST);
+
+			}
+		} catch (BusinessException e) {
+			return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<MensajeRespuesta>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
+	@GetMapping(value = "/pedirConciliacion/{nroOrden}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<MensajeRespuesta> pedirConciliacion(
+			@PathVariable("nroOrden") int nroOrden) throws NotFoundException {
+
+		try {
+			MensajeRespuesta m = ordenBusiness.generarConciliacion(nroOrden).getMensaje();
+			if (m.getCodigo() == 0) {
+				return new ResponseEntity<MensajeRespuesta>(m, HttpStatus.OK);
+			} else {
+				return new ResponseEntity<MensajeRespuesta>(m, HttpStatus.BAD_REQUEST);
+
+			}
+		} catch (BusinessException e) {
+			return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (NotFoundException e) {
+			return new ResponseEntity<MensajeRespuesta>(HttpStatus.NOT_FOUND);
+		}
+	}
 
 }
