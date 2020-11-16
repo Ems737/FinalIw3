@@ -39,7 +39,6 @@ public class ProductoBusiness implements IProductoBusiness {
 		return producto.get();
 	}
 
-	
 	@Override
 	public List<Producto> list() throws BusinessException {
 		try {
@@ -66,7 +65,7 @@ public class ProductoBusiness implements IProductoBusiness {
 	@Override
 	public Producto update(Producto producto, long id) throws NotFoundException, BusinessException {
 		Producto productoNuevo = new Producto();
-		Producto productoViejo = load(id,"*");
+		Producto productoViejo = load(id, "*");
 
 		productoNuevo.setId(id);
 
@@ -96,20 +95,19 @@ public class ProductoBusiness implements IProductoBusiness {
 
 	}
 
-
 	@Override
 	public Producto load(String codigoExterno) throws NotFoundException, BusinessException {
-		Optional<Producto> producto; 
+		Optional<Producto> producto;
 		try {
 			producto = productoDAO.findFirstByCodigoexterno(codigoExterno);
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		if(!producto.isPresent())
-			throw new NotFoundException("El producto con codigo externo " + codigoExterno + " no se encuentra en la BD");
-		return producto.get(); 
+		if (!producto.isPresent())
+			throw new NotFoundException(
+					"El producto con codigo externo " + codigoExterno + " no se encuentra en la BD");
+		return producto.get();
 	}
-
 
 	@Override
 	public Producto asegurarProducto(Producto producto) throws BusinessException {
@@ -118,7 +116,7 @@ public class ProductoBusiness implements IProductoBusiness {
 			p = load(producto.getCodigoexterno());
 			p.setNombre(producto.getNombre());
 			p.setDescripcion(producto.getDescripcion());
-			
+
 		} catch (NotFoundException e) {
 			p = new Producto(producto);
 		}

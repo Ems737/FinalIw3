@@ -3,7 +3,6 @@ package ar.edu.iua.business;
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.DetalleOrden;
-import ar.edu.iua.model.Orden;
 import ar.edu.iua.model.dto.RespuestaGenerica;
 
 public interface IDetalleOrdenBusiness {

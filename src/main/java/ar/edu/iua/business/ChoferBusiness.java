@@ -122,7 +122,7 @@ public class ChoferBusiness implements IChoferBusiness {
 			c.setApellido(chofer.getApellido());
 			c.setNombre(chofer.getNombre());
 			c.setDni(chofer.getDni());
-			
+
 		} catch (NotFoundException e) {
 			c = new Chofer(chofer);
 		}

@@ -33,9 +33,9 @@ public class Producto implements Serializable {
 
 	@Column()
 	private String descripcion;
-	
+
 	@Column(length = 50, nullable = true, unique = true)
-    private String codigoexterno; 
+	private String codigoexterno;
 
 	public long getId() {
 		return id;
@@ -60,7 +60,6 @@ public class Producto implements Serializable {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	
 
 	public String getCodigoexterno() {
 		return codigoexterno;
@@ -77,15 +76,15 @@ public class Producto implements Serializable {
 		return null;
 
 	}
-	
+
 	public Producto(Producto producto) {
 		this.codigoexterno = producto.getCodigoexterno();
 		this.nombre = producto.getNombre();
+		this.descripcion = producto.getDescripcion();
 	}
-	
+
 	public Producto() {
-		
+
 	}
-	
 
 }

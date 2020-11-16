@@ -132,6 +132,7 @@ public class CamionBusiness implements ICamionBusiness {
 			c = load(camion.getCodigoexterno());
 			c.setPatente(camion.getPatente());
 			c.setCisternado(camion.getCisternado());
+			c.setDescripcion(camion.getDescripcion());
 		} catch (NotFoundException e) {
 			c = new Camion(camion);
 		}

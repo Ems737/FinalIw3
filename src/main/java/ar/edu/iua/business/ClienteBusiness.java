@@ -38,7 +38,6 @@ public class ClienteBusiness implements IClienteBusiness {
 		return cliente.get();
 	}
 
-	
 	@Override
 	public List<Cliente> list() throws BusinessException {
 		try {
@@ -65,7 +64,7 @@ public class ClienteBusiness implements IClienteBusiness {
 	@Override
 	public Cliente update(Cliente cliente, long id) throws NotFoundException, BusinessException {
 		Cliente clienteNuevo = new Cliente();
-		Cliente clienteViejo = load(id,"*");
+		Cliente clienteViejo = load(id, "*");
 
 		clienteNuevo.setId(id);
 
@@ -74,12 +73,12 @@ public class ClienteBusiness implements IClienteBusiness {
 		else
 			clienteNuevo.setRazonSocial(cliente.getRazonSocial());
 
-		if (cliente.getContacto()==0)
+		if (cliente.getContacto() == 0)
 			clienteNuevo.setContacto(clienteViejo.getContacto());
 		else
 			clienteNuevo.setContacto(cliente.getContacto());
-		
-		//lista 
+
+		// lista
 
 		return add(clienteNuevo);
 
@@ -96,18 +95,19 @@ public class ClienteBusiness implements IClienteBusiness {
 		}
 
 	}
-	
+
 	@Override
 	public Cliente load(String codigoExterno) throws NotFoundException, BusinessException {
-		Optional<Cliente> cliente; 
+		Optional<Cliente> cliente;
 		try {
 			cliente = clienteDAO.findFirstByCodigoexterno(codigoExterno);
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-		if(!cliente.isPresent())
-			throw new NotFoundException("El producto con codigo externo " + codigoExterno + " no se encuentra en la BD");
-		return cliente.get(); 
+		if (!cliente.isPresent())
+			throw new NotFoundException(
+					"El producto con codigo externo " + codigoExterno + " no se encuentra en la BD");
+		return cliente.get();
 	}
 
 	@Override
@@ -122,7 +122,5 @@ public class ClienteBusiness implements IClienteBusiness {
 		}
 		return clienteDAO.save(c);
 	}
-	
-	
 
 }

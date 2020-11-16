@@ -18,91 +18,96 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(name="choferes")
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@Table(name = "choferes")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 
 public class Chofer implements Serializable {
 
 	private static final long serialVersionUID = 3759989795563161398L;
 
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id; 
-	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+
 	@Column(nullable = false)
 	private long dni;
-	
-	@OneToMany(targetEntity=Orden.class, mappedBy="chofer", fetch = FetchType.LAZY)
-    @JsonBackReference
-    private List<Orden> ordenList;
-	
+
+	@OneToMany(targetEntity = Orden.class, mappedBy = "chofer", fetch = FetchType.LAZY)
+	@JsonBackReference
+	private List<Orden> ordenList;
+
 	@Column()
-	private String nombre; 
+	private String nombre;
 	@Column()
 	private String apellido;
-	
+
 	@Column(length = 50, nullable = true, unique = true)
-    private String codigoexterno; 
-	
+	private String codigoexterno;
+
 	public long getId() {
 		return id;
 	}
+
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	public long getDni() {
 		return dni;
 	}
+
 	public void setDni(long dni) {
 		this.dni = dni;
 	}
+
 	public List<Orden> getOrdenList() {
 		return ordenList;
 	}
+
 	public void setOrdenList(List<Orden> ordenList) {
 		this.ordenList = ordenList;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+
 	public String getApellido() {
 		return apellido;
 	}
+
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
-	} 
-	
+	}
+
 	public String getCodigoexterno() {
 		return codigoexterno;
 	}
+
 	public void setCodigoexterno(String codigoexterno) {
 		this.codigoexterno = codigoexterno;
 	}
-	public String checkBasicData()
-	{
-		if(getDni()==0)
+
+	public String checkBasicData() {
+		if (getDni() == 0)
 			return "El dni es un atributo obligatorio";
-		return null; 
+		return null;
 	}
-	
-	
-	public Chofer(Chofer chofer)
-	{
+
+	public Chofer(Chofer chofer) {
 		this.codigoexterno = chofer.codigoexterno;
 		this.apellido = chofer.getApellido();
 		this.dni = chofer.getDni();
 		this.nombre = chofer.getNombre();
 	}
+
 	public Chofer() {
-		
+
 	}
-	
-	
-	
-	
 
 }

@@ -93,16 +93,15 @@ public class Cliente implements Serializable {
 	public void setCodigoexterno(String codigoexterno) {
 		this.codigoexterno = codigoexterno;
 	}
-	
-	public Cliente(Cliente cliente)
-	{
+
+	public Cliente(Cliente cliente) {
 		this.codigoexterno = cliente.getCodigoexterno();
-		this.razonSocial = cliente.getRazonSocial(); 
+		this.razonSocial = cliente.getRazonSocial();
 		this.contacto = cliente.getContacto();
 	}
-	public Cliente ()
-	{
-		
+
+	public Cliente() {
+
 	}
 
 }

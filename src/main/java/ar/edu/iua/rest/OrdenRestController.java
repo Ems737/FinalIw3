@@ -6,7 +6,6 @@ import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Orden;
 import ar.edu.iua.model.dto.MensajeRespuesta;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -14,24 +13,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-
-
-
 @RestController
 @RequestMapping(value = Constantes.URL_ORDENES)
 public class OrdenRestController {
 
-
-	
 	@Autowired
 	private IOrdenBusiness ordenBusiness;
-	
+
 	@PostMapping(value = "/integracion", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<MensajeRespuesta> load(@RequestBody Orden orden) {
 
 		try {
-			System.out.println("recibo " + orden.getNumeroOrden());
+		
 			MensajeRespuesta m = ordenBusiness.recibirEstadoUno(orden).getMensaje();
 			if (m.getCodigo() == 0) {
 				return new ResponseEntity<MensajeRespuesta>(m, HttpStatus.OK);
@@ -43,9 +36,9 @@ public class OrdenRestController {
 			return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping(value = "/integracion/{nroOrden}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MensajeRespuesta> pesajeInicial(@RequestBody Orden orden, 
+	public ResponseEntity<MensajeRespuesta> pesajeInicial(@RequestBody Orden orden,
 			@PathVariable("nroOrden") int nroOrden) throws NotFoundException {
 
 		try {
@@ -58,13 +51,13 @@ public class OrdenRestController {
 			}
 		} catch (BusinessException e) {
 			return new ResponseEntity<MensajeRespuesta>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}catch (NotFoundException e) {
+		} catch (NotFoundException e) {
 			return new ResponseEntity<MensajeRespuesta>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@PostMapping(value = "/conciliacion/{nroOrden}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MensajeRespuesta> pesajeFinal(@RequestBody Orden orden, 
+	public ResponseEntity<MensajeRespuesta> pesajeFinal(@RequestBody Orden orden,
 			@PathVariable("nroOrden") int nroOrden) throws NotFoundException {
 
 		try {
@@ -81,10 +74,10 @@ public class OrdenRestController {
 			return new ResponseEntity<MensajeRespuesta>(HttpStatus.NOT_FOUND);
 		}
 	}
-	
+
 	@GetMapping(value = "/pedirConciliacion/{nroOrden}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<MensajeRespuesta> pedirConciliacion(
-			@PathVariable("nroOrden") int nroOrden) throws NotFoundException {
+	public ResponseEntity<MensajeRespuesta> pedirConciliacion(@PathVariable("nroOrden") int nroOrden)
+			throws NotFoundException {
 
 		try {
 			MensajeRespuesta m = ordenBusiness.generarConciliacion(nroOrden).getMensaje();

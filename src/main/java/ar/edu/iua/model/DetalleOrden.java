@@ -9,7 +9,7 @@ import java.util.Date;
 import javax.persistence.*;
 
 @Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.IntSequenceGenerator.class, property="id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 
 //ESTE ES NUESTRO SISTEMA EXTERNO
 public class DetalleOrden implements Serializable {
@@ -19,20 +19,20 @@ public class DetalleOrden implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column()
-	private double masaAcumulada; 
+	private double masaAcumulada;
 	@Column()
 	private double densidad;
 	@Column()
-	private double temperatura; 
+	private double temperatura;
 	@Column()
-	private double caudal; 
+	private double caudal;
 	@Column()
-	private Date fechaHoraMedicion; 
-	
-	@ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name = "id_orden")
+	private Date fechaHoraMedicion;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_orden")
 	private Orden orden;
 
 	public long getId() {
@@ -105,36 +105,35 @@ public class DetalleOrden implements Serializable {
 		this.caudal = caudal;
 		this.fechaHoraMedicion = fechaHoraMedicion;
 		this.orden = orden;
-	} 
-	
-	public String checkBasicData(Orden orden)
-	{
-		if(orden.getEstado()==3)
-			return "El camion esta cargado";
-		if(orden.getEstado()!=2)
-			return "Para comenzar a cargar el camion, la orden debe estar en estado 2";
-		if(getCaudal()==0)
-			return "El atributo caudal es obligatorio";
-		if(getCaudal()<0)
-			return "El caudal debe ser > 0";
-		if(getCaudal()<3000 || getCaudal()>5000)
-			return "El caudal debe estar entre 3000 y 5000 kg/h";
-		if(getMasaAcumulada()==0)
-			return "El atributo masa acumulada es obligatorio";
-		if(getMasaAcumulada()< orden.getUltimaMasaAcumulada())
-			return "La masa acumulada debe ser creciente";
-		if(getDensidad()==0)
-			return "El atributo densidad es obligatorio";
-		if(getDensidad()<0 || getDensidad()>1) //VER
-			return "La densidad debe ser entre 0 y 1";
-		if(getTemperatura()==0)
-			return "El atributo temperatura es obligatorio";
-		if(getTemperatura()<0 || getTemperatura()>40) 
-			return "La temperatura debe ser mayor a 0 y menor que 40 grados.";
-		if(orden.getPreset()<getMasaAcumulada()) 
-			return "Camion cargado"; 
-		return "Cargando camion"; 
-		
 	}
-    
+
+	public String checkBasicData(Orden orden) {
+		if (orden.getEstado() == 3)
+			return "El camion esta cargado";
+		if (orden.getEstado() != 2)
+			return "Para comenzar a cargar el camion, la orden debe estar en estado 2";
+		if (getCaudal() == 0)
+			return "El atributo caudal es obligatorio";
+		if (getCaudal() < 0)
+			return "El caudal debe ser > 0";
+		if (getCaudal() < 3000 || getCaudal() > 5000)
+			return "El caudal debe estar entre 3000 y 5000 kg/h";
+		if (getMasaAcumulada() == 0)
+			return "El atributo masa acumulada es obligatorio";
+		if (getMasaAcumulada() < orden.getUltimaMasaAcumulada())
+			return "La masa acumulada debe ser creciente";
+		if (getDensidad() == 0)
+			return "El atributo densidad es obligatorio";
+		if (getDensidad() < 0 || getDensidad() > 1) // VER
+			return "La densidad debe ser entre 0 y 1";
+		if (getTemperatura() == 0)
+			return "El atributo temperatura es obligatorio";
+		if (getTemperatura() < 0 || getTemperatura() > 40)
+			return "La temperatura debe ser mayor a 0 y menor que 40 grados.";
+		if (orden.getPreset() < getMasaAcumulada())
+			return "Camion cargado";
+		return "Cargando camion";
+
+	}
+
 }

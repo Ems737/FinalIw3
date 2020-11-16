@@ -114,7 +114,6 @@ public class Orden implements Serializable {
 		this.pesajeInicial = pesajeInicial;
 	}
 
-	
 	public double getPesajeFinal() {
 		return pesajeFinal;
 	}
@@ -277,7 +276,7 @@ public class Orden implements Serializable {
 
 	public String checkBasicDataStatusOne() {
 
-		System.out.println(getNumeroOrden());
+		
 		if ((getNumeroOrden() <= 0))
 			return "El numero de orden es obligatorio";
 		if (getTurno() == null)
@@ -333,15 +332,15 @@ public class Orden implements Serializable {
 
 	public String checkBasicDataStatusThree(Orden orden, int nroOrden) {
 
-		if(getPesajeFinal()==0)
-			return "El atributo pesaje final es obligatorio"; 
-		if(getPesajeFinal() < orden.getPesajeInicial() || getPesajeFinal()<(orden.getPesajeInicial()+orden.getPreset()))
+		if (getPesajeFinal() == 0)
+			return "El atributo pesaje final es obligatorio";
+		if (getPesajeFinal() < orden.getPesajeInicial()
+				|| getPesajeFinal() < (orden.getPesajeInicial() + orden.getPreset()))
 			return "Pesaje final invalido";
-		if (orden.getEstado()!= 3)
+		if (orden.getEstado() != 3)
 			return "Para realizar el pesaje final, la orden debe estar en estado 3";
 		return "Ok para pesaje final";
 
 	}
-	
-	
+
 }

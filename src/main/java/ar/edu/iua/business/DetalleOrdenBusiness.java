@@ -1,6 +1,5 @@
 package ar.edu.iua.business;
 
-
 import java.util.Date;
 import java.util.Optional;
 
@@ -26,12 +25,11 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 	@Autowired
 	private IDetalleOrdenBusiness detalleOrdenService;
 
-
 	@Autowired
 	private DetalleOrdenRepository detalleOrdenDAO;
 	@Autowired
 	private OrdenRepository ordenDAO;
-	
+
 	@Override
 	public DetalleOrden load(long id) throws BusinessException, NotFoundException {
 		Optional<DetalleOrden> detalleOrden = null;
@@ -48,23 +46,22 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 		return detalleOrden.get();
 	}
 
-
 	@Override
-	public RespuestaGenerica<DetalleOrden> cargarCamion(DetalleOrden detalleOrden, int nroOrden) throws BusinessException, NotFoundException
-	{
+	public RespuestaGenerica<DetalleOrden> cargarCamion(DetalleOrden detalleOrden, int nroOrden)
+			throws BusinessException, NotFoundException {
 		MensajeRespuesta m = new MensajeRespuesta();
 		RespuestaGenerica<DetalleOrden> rg = new RespuestaGenerica<DetalleOrden>(detalleOrden, m);
-		
+
 		Orden orden = ordenService.load(nroOrden);
-		
+
 		String mensajeCheck = detalleOrden.checkBasicData(orden);
-		
-		if(mensajeCheck!="Cargando camion") {
+
+		if (mensajeCheck != "Cargando camion") {
 			m.setCodigo(-1);
 			m.setMensaje(mensajeCheck);
-			return rg; 
+			return rg;
 		}
-		
+
 		try {
 			detalleOrden.setOrden(orden);
 			detalleOrden.setMasaAcumulada(detalleOrden.getMasaAcumulada());
@@ -73,28 +70,26 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 			detalleOrden.setCaudal(detalleOrden.getCaudal());
 			detalleOrden.setFechaHoraMedicion(new Date());
 			detalleOrdenDAO.save(detalleOrden);
-			
-			//MODIFICAMOS LA ORDEN 
+
+			// MODIFICAMOS LA ORDEN
 			orden.setUltimaMasaAcumulada(detalleOrden.getMasaAcumulada());
 			orden.setUltimaDensidad(detalleOrden.getDensidad());
 			orden.setUltimaTemperatura(detalleOrden.getTemperatura());
 			orden.setUltimoCaudal(detalleOrden.getCaudal());
-			orden.setFechaHoraInicioCarga(detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
+			orden.setFechaHoraInicioCarga(
+					detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
 			orden.setFechaHoraFinCarga(new Date());
-			
-			if(orden.getPreset() == detalleOrden.getMasaAcumulada())
+
+			if (orden.getPreset() == detalleOrden.getMasaAcumulada())
 				orden.setEstado(3);
-			//VER EL TEMA DE LA HORA PORQUE ES EL PRIMER DETALLE VALIDO
 			
-			
-			
+
 			ordenDAO.save(orden);
 		} catch (Exception e) {
 			throw new BusinessException();
 		}
-		
-		return rg; 
+
+		return rg;
 	}
 
-	
 }

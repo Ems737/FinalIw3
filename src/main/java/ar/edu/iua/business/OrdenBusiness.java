@@ -156,7 +156,7 @@ public class OrdenBusiness implements IOrdenBusiness {
 		if (ordenVieja.getEstado() != 4) {
 			m.setCodigo(-1);
 			m.setMensaje("Para pedir la conciliacion la orden debe estar en estado 4");
-			return rg; 
+			return rg;
 		}
 
 		try {
