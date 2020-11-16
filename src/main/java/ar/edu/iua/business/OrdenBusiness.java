@@ -3,13 +3,9 @@ package ar.edu.iua.business;
 import java.util.Date;
 import java.util.Optional;
 
-
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
-
-
 
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
@@ -18,7 +14,6 @@ import ar.edu.iua.model.dto.ConciliacionDTO;
 import ar.edu.iua.model.dto.MensajeRespuesta;
 import ar.edu.iua.model.dto.RespuestaGenerica;
 import ar.edu.iua.model.persistence.OrdenRepository;
-
 
 @Service
 public class OrdenBusiness implements IOrdenBusiness {
@@ -157,10 +152,11 @@ public class OrdenBusiness implements IOrdenBusiness {
 		Orden ordenVieja = load(nroOrden);
 		MensajeRespuesta m = new MensajeRespuesta();
 		RespuestaGenerica<Orden> rg = new RespuestaGenerica<Orden>(ordenVieja, m);
-	
-		if (ordenVieja.getEstado()!= 4) {
+
+		if (ordenVieja.getEstado() != 4) {
 			m.setCodigo(-1);
 			m.setMensaje("Para pedir la conciliacion la orden debe estar en estado 4");
+			return rg; 
 		}
 
 		try {
@@ -171,16 +167,12 @@ public class OrdenBusiness implements IOrdenBusiness {
 					ordenVieja.getPromedioTemperatura(), ordenVieja.getPromedioCaudal(),
 					ordenVieja.getPromedioDensidad());
 
-		
 			m.setCodigo(0);
 			m.setMensaje(conciliacion.toString());
-			
 
 		} catch (Exception e) {
 			throw new BusinessException(e);
 		}
-			
-		
 
 		return rg;
 
