@@ -5,11 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
 import java.util.List;
 
+@ApiModel(value="Camion", description="Modelo de camion de carga")
 @Entity
 @Table(name = "camiones")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -19,28 +23,34 @@ public class Camion implements Serializable {
 
 	private static final long serialVersionUID = 7360841509302825955L;
 
+	@ApiModelProperty(notes="Identificador del camion, clave autogenerada", required=false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@ApiModelProperty(notes="Patente del camion", required=true)
 	@Column(length = 6, nullable = false)
 	private String patente;
 
+	@ApiModelProperty(notes="Descripcion del camion", required=false)
 	@Column(length = 200)
 	private String descripcion;
 
+	@ApiModelProperty(notes="Cisternado del camion", example= "[2000,1500]",required=false)
 	@Column()
 	private double cisternado[];
 
+	@ApiModelProperty(notes="Codigo externo de integracion. Clave candidata", required=true)
 	@Column(length = 50, nullable = true, unique = true)
 	private String codigoexterno;
 
-	// VER
+	
+	@ApiModelProperty(notes="Lista de ordenes pertenecientes al camion", required=false)
 	@OneToMany(targetEntity = Orden.class, mappedBy = "camion", fetch = FetchType.LAZY)
 	@JsonBackReference
 	private List<Orden> ordenList;
 
-	// Getters y setters
+	
 	public long getId() {
 		return id;
 	}

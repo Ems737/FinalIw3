@@ -12,6 +12,7 @@ import ar.edu.iua.model.Orden;
 public interface OrdenRepository extends JpaRepository<Orden, Integer> {
 
 	Optional<Orden> findByNumeroOrden(int nroOrden);
+	public void deleteByNumeroOrden(int numeroOrden);
 
 	@Query(value = "select truncate(avg(densidad),2) from detalle_orden where id_orden = ?1", nativeQuery = true)
 	public double promedioDensidad(int idOrden);

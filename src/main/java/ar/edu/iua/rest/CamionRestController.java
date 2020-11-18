@@ -22,19 +22,34 @@ import ar.edu.iua.business.ICamionBusiness;
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Camion;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = Constantes.URL_CAMIONES)
+
+@Api(value = "Camiones", description = "Operaciones relacionadas con los camiones", tags = { "Camiones" })
 
 public class CamionRestController {
 
 	@Autowired
 	private ICamionBusiness camionBusiness;
 
+	@ApiOperation(value="Obtener un camion mediante el ID o la patente", response = Camion.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 404, message = "Camion no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
+	
 	@GetMapping(value = "/load", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Camion> load(
-			@RequestParam(name = "patente", required = false, defaultValue = "*") String patente,
-			@RequestParam(name = "id", required = false, defaultValue = "0") long id) {
+			@ApiParam(value = "Patente del camion") @RequestParam(name = "patente", required = false, defaultValue = "*") String patente,
+			@ApiParam(value = "ID del camion") @RequestParam(name = "id", required = false, defaultValue = "0") long id) {
 		try {
 			return new ResponseEntity<Camion>(camionBusiness.load(patente, id), HttpStatus.OK);
 		} catch (BusinessException e) {
@@ -44,6 +59,13 @@ public class CamionRestController {
 		}
 	}
 
+	
+	@ApiOperation(value="Obtener listado de camiones", response = Camion.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 	@GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Camion>> list() {
 		try {
@@ -54,6 +76,12 @@ public class CamionRestController {
 
 	}
 
+	@ApiOperation(value="Añadir un camion", response = Camion.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 201, message = "Camion creado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 	@PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> add(@RequestBody Camion camion) {
 		try {
@@ -66,8 +94,16 @@ public class CamionRestController {
 		}
 	}
 
+
+	@ApiOperation(value="Actualizacion de un camion", response = Camion.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operacion exitosa"),
+			@ApiResponse(code = 404, message = "Camion no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 	@PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody Camion camion) {
+	public ResponseEntity<String> update(@ApiParam(value = "ID del camion")@PathVariable("id") Long id, @RequestBody Camion camion) {
 		try {
 
 			camionBusiness.update(camion, id);
@@ -79,8 +115,15 @@ public class CamionRestController {
 		}
 	}
 
-	@DeleteMapping(value = "delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> delete(@PathVariable(name = "id") long id) {
+	@ApiOperation(value="Eliminacion de un camion", response = Camion.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operacion exitosa"),
+			@ApiResponse(code = 404, message = "Camion no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> delete(@ApiParam(value = "ID del camion")@PathVariable(name = "id") long id) {
 		try {
 			camionBusiness.delete(id);
 			return new ResponseEntity<String>(HttpStatus.OK);
@@ -91,6 +134,12 @@ public class CamionRestController {
 		}
 	}
 
+	@ApiOperation(value="Integracion de un camion", response = Camion.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operacion exitosa"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 	@PutMapping(value = "/integracion", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Camion> integracion(@RequestBody Camion camion) {
 		try {

@@ -17,6 +17,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+@ApiModel(value="Chofer", description="Modelo de chofer")
 @Entity
 @Table(name = "choferes")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -26,22 +29,28 @@ public class Chofer implements Serializable {
 
 	private static final long serialVersionUID = 3759989795563161398L;
 
+	@ApiModelProperty(notes="Identificador del chofer, clave autogenerada", required=false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@ApiModelProperty(notes="DNI del chofer", required=true)
 	@Column(nullable = false)
 	private long dni;
 
+	@ApiModelProperty(notes="Lista de ordenes pertenecientes a un chofer", required=false)
 	@OneToMany(targetEntity = Orden.class, mappedBy = "chofer", fetch = FetchType.LAZY)
 	@JsonBackReference
 	private List<Orden> ordenList;
 
+	@ApiModelProperty(notes="Nombre del chofer", example = "Pedro", required=false)
 	@Column()
 	private String nombre;
+	@ApiModelProperty(notes="Apellido del chofer", example = "Castro", required=false)
 	@Column()
 	private String apellido;
 
+	@ApiModelProperty(notes="Codigo externo de integracion. Clave candidata", required=true)
 	@Column(length = 50, nullable = true, unique = true)
 	private String codigoexterno;
 

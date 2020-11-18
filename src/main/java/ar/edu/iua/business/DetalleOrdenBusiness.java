@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import ar.edu.iua.business.exception.BusinessException;
@@ -56,7 +55,7 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 
 		String mensajeCheck = detalleOrden.checkBasicData(orden);
 
-		if (mensajeCheck != "Cargando camion") {
+		if ((mensajeCheck != "Cargando camion") && (mensajeCheck != "Camion cargado")) {
 			m.setCodigo(-1);
 			m.setMensaje(mensajeCheck);
 			return rg;
@@ -80,9 +79,11 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 					detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
 			orden.setFechaHoraFinCarga(new Date());
 
-			if (orden.getPreset() == detalleOrden.getMasaAcumulada())
-				orden.setEstado(3);
-			
+			// if (orden.getPreset() == detalleOrden.getMasaAcumulada()) {
+			// orden.setEstado(3);
+			// m.setCodigo(0);
+			// m.setMensaje("Camion cargado");
+			// }
 
 			ordenDAO.save(orden);
 		} catch (Exception e) {
@@ -91,5 +92,7 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 
 		return rg;
 	}
+
+	
 
 }

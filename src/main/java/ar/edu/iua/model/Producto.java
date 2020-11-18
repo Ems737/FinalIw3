@@ -15,6 +15,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+@ApiModel(value="Producto", description="Modelo de producto a cargar")
 @Entity
 @Table(name = "productos")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -24,16 +28,20 @@ public class Producto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@ApiModelProperty(notes="Identificador del producto, clave autogenerada", required=false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@ApiModelProperty(notes="Nombre del producto", required=true)
 	@Column(nullable = false)
 	private String nombre;
 
+	@ApiModelProperty(notes="Descripcion del producto", required=false)
 	@Column()
 	private String descripcion;
 
+	@ApiModelProperty(notes="Codigo externo de integracion. Clave candidata", required=true)
 	@Column(length = 50, nullable = true, unique = true)
 	private String codigoexterno;
 

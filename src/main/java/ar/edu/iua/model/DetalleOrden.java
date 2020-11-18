@@ -3,11 +3,13 @@ package ar.edu.iua.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import io.swagger.annotations.ApiModel;
+
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.*;
-
+@ApiModel(value="Detalle Orden", description="Modelo de detalle de orden de carga")
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 
@@ -108,8 +110,8 @@ public class DetalleOrden implements Serializable {
 	}
 
 	public String checkBasicData(Orden orden) {
-		if (orden.getEstado() == 3)
-			return "El camion esta cargado";
+		//if (orden.getEstado() == 3)
+			//return "El camion esta lleno y la orden se cerró";
 		if (orden.getEstado() != 2)
 			return "Para comenzar a cargar el camion, la orden debe estar en estado 2";
 		if (getCaudal() == 0)
@@ -130,8 +132,11 @@ public class DetalleOrden implements Serializable {
 			return "El atributo temperatura es obligatorio";
 		if (getTemperatura() < 0 || getTemperatura() > 40)
 			return "La temperatura debe ser mayor a 0 y menor que 40 grados.";
-		if (orden.getPreset() < getMasaAcumulada())
+		if(orden.getPreset() < getMasaAcumulada())
+			return "Detalle de orden invalido porque la masa acumulada excede el preset";
+		if(orden.getPreset() ==  getMasaAcumulada())
 			return "Camion cargado";
+		
 		return "Cargando camion";
 
 	}

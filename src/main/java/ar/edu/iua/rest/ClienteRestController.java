@@ -21,19 +21,34 @@ import ar.edu.iua.business.IClienteBusiness;
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
 import ar.edu.iua.model.Cliente;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = Constantes.URL_CLIENTES)
+
+@Api(value = "Clientes", description = "Operaciones relacionadas con los clientes", tags = { "Clientes" })
 
 public class ClienteRestController {
 
 	@Autowired
 	private IClienteBusiness clienteBusiness;
+	
+	@ApiOperation(value="Obtener un cliente mediante el ID o la razon social", response = Cliente.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 404, message = "Chofer no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 
 	@GetMapping(value = "/load", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Cliente> load(
-			@RequestParam(name = "razonSocial", required = false, defaultValue = "*") String razonSocial,
-			@RequestParam(name = "id", required = false, defaultValue = "0") long id) {
+			@ApiParam(value = "Razon social del cliente")@RequestParam(name = "razonSocial", required = false, defaultValue = "*") String razonSocial,
+			@ApiParam(value = "DNI del cliente")@RequestParam(name = "id", required = false, defaultValue = "0") long id) {
 		try {
 			return new ResponseEntity<Cliente>(clienteBusiness.load(id, razonSocial), HttpStatus.OK);
 		} catch (BusinessException e) {
@@ -42,6 +57,13 @@ public class ClienteRestController {
 			return new ResponseEntity<Cliente>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	@ApiOperation(value="Obtener listado de clientes", response = Cliente.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operación exitosa"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 
 	@GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<Cliente>> list() {
@@ -53,6 +75,12 @@ public class ClienteRestController {
 
 	}
 
+	@ApiOperation(value="Añadir un cliente", response = Cliente.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 201, message = "Chofer creado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 	@PostMapping(value = "/add", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> add(@RequestBody Cliente cliente) {
 		try {
@@ -65,8 +93,17 @@ public class ClienteRestController {
 		}
 	}
 
+
+	@ApiOperation(value="Actualizacion de un cliente", response = Cliente.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operacion exitosa"),
+			@ApiResponse(code = 404, message = "Chofer no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
 	@PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> update(@PathVariable("id") long id, @RequestBody Cliente cliente) {
+	public ResponseEntity<String> update(
+			@ApiParam(value = "ID del cliente")@PathVariable("id") long id, @RequestBody Cliente cliente) {
 		try {
 
 			clienteBusiness.update(cliente, id);
@@ -78,8 +115,16 @@ public class ClienteRestController {
 		}
 	}
 
-	@DeleteMapping(value = "delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> delete(@PathVariable(name = "id") long id) {
+	@ApiOperation(value="Eliminacion de un cliente", response = Cliente.class)
+
+	@ApiResponses(value = { 
+			@ApiResponse(code = 200, message = "Operacion exitosa"),
+			@ApiResponse(code = 404, message = "Chofer no encontrado"),
+			@ApiResponse(code = 500, message = "Error interno del servidor") 
+	})
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> delete(
+			@ApiParam(value = "ID del cliente")@PathVariable(name = "id") long id) {
 		try {
 			clienteBusiness.delete(id);
 			return new ResponseEntity<String>(HttpStatus.OK);

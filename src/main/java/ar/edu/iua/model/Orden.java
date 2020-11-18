@@ -3,12 +3,16 @@ package ar.edu.iua.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.*;
 
+@ApiModel(value="Orden", description="Modelo de orden de carga ")
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "id")
 
@@ -16,57 +20,74 @@ public class Orden implements Serializable {
 
 	private static final long serialVersionUID = 451621105748580924L;
 
+	@ApiModelProperty(notes="Identificador de la orden, clave autogenerada", required=false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@ApiModelProperty(notes="Numero de la orden. Clave candidata", required=true)
 	@Column(unique = true)
 	private int numeroOrden;
 
+	@ApiModelProperty(notes="Cantidad de kg que se debe cargar en el camion", required=true)
 	@Column()
 	private double preset;
+	@ApiModelProperty(notes="Peso del camion vacio", required=true)
 	@Column()
 	private double pesajeInicial;
+	@ApiModelProperty(notes="Peso del camion cargado", required=false)
 	@Column()
 	private double pesajeFinal;
 
+	@ApiModelProperty(notes="Camion de la orden", required=true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "camion_id")
 	private Camion camion;
+	@ApiModelProperty(notes="Cliente de la orden", required=true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "cliente_id")
 	private Cliente cliente;
+	@ApiModelProperty(notes="Chofer del camion de la orden", required=true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "chofer_id")
 	private Chofer chofer;
+	@ApiModelProperty(notes="Producto de la orden", required=true)
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "producto_id")
 	private Producto producto;
 
 	// VA DEL 1 AL 4
+	@ApiModelProperty(notes="Estado de la orden", required=false)
 	@Column()
 	private int estado;
 
 	// DATOS QUE SE VAN ACTUALIZANDO SEGUN LA ORDEN DETALLE QUE SE RECIBE
 
+	@ApiModelProperty(notes="Turno de carga", required=true)
 	@Column(columnDefinition = "DATETIME")
 	private Date turno;
 
+	@ApiModelProperty(notes="Fecha/hora de realizacion del pesaje inicial", required=false)
 	@Column(columnDefinition = "DATETIME")
 	private Date fechaHoraPesajeInicial;
 
+	@ApiModelProperty(notes="Fecha/hora del inicio de carga del camion", required=false)
 	@Column(columnDefinition = "DATETIME")
 	private Date fechaHoraInicioCarga;
 
+	@ApiModelProperty(notes="Fecha/hora de finalizacion de carga del camion", required=false)
 	@Column(columnDefinition = "DATETIME")
 	private Date fechaHoraFinCarga;
 
+	@ApiModelProperty(notes="Fecha/hora de realizacion del pesaje final", required=false)
 	@Column(columnDefinition = "DATETIME")
 	private Date fechaHoraPesajeFinal;
 
+	@ApiModelProperty(notes="Password de 5 digitos. Generada aleatoriamente", required=false)
 	@Column(length = 5)
 	private int password;
 
+	
 	@Column()
 	private double ultimaMasaAcumulada;
 	@Column()
@@ -283,25 +304,27 @@ public class Orden implements Serializable {
 			return "El atributo turno es obligatorio";
 		if (getChofer() == null)
 			return "El atributo chofer es obligatorio";
-		if (getChofer().getCodigoexterno().equals(null) || getChofer().getCodigoexterno().trim().length() == 0)
+		if (getChofer().getCodigoexterno()==null || getChofer().getCodigoexterno().trim().length() == 0)
 			return "El atributo chofer.codigoexterno es obligatorio";
 		if (getChofer().getDni() == 0)
 			return "El atributo chofer.dni es obligatorio";
 		if (getCamion() == null)
 			return "El atributo camion es obligatorio";
-		if (getCamion().getCodigoexterno().equals(null) || getCamion().getCodigoexterno().trim().length() == 0)
+		if (getCamion().getCodigoexterno()==null || getCamion().getCodigoexterno().trim().length() == 0)
 			return "El atributo camion.codigoexterno es obligatorio";
 		if (getCamion().getPatente() == null || getCamion().getPatente().trim().length() == 0)
 			return "El atributo camion.patente es obligatorio";
+		if(getCamion().getCisternado() == null|| getCamion().getCisternado().length==0)
+			return "El atributo camion.cisternado es obligatorio"; 
 		if (getCliente() == null)
 			return "El atributo cliente es obligatorio";
-		if (getCliente().getCodigoexterno().equals(null) || getCliente().getCodigoexterno().trim().length() == 0)
+		if (getCliente().getCodigoexterno()==null || getCliente().getCodigoexterno().trim().length() == 0)
 			return "El atributo cliente.codigoexterno es obligatorio";
 		if (getCliente().getRazonSocial() == null || getCliente().getRazonSocial().trim().length() == 0)
 			return "El atributo cliente.razonSocial es obligatorio";
 		if (getProducto() == null)
 			return "El atributo producto es obligatorio";
-		if (getProducto().getCodigoexterno().equals(null) || getProducto().getCodigoexterno().trim().length() == 0)
+		if (getProducto().getCodigoexterno()==null || getProducto().getCodigoexterno().trim().length() == 0)
 			return "El atributo producto.codigoexterno es obligatorio";
 		if (getProducto().getNombre() == null || getProducto().getNombre().trim().length() == 0)
 			return "El atributo producto.nombre es obligatorio";
@@ -326,11 +349,14 @@ public class Orden implements Serializable {
 			return "Para realizar el pesaje inicial la orden debe estar en estado 1";
 		if (getPesajeInicial() <= 0)
 			return "El atributo pesaje es obligatorio";
+		if(getPassword()==0 || String.valueOf(getPassword()).length()!=5)
+			return "El atributo password es obligatorio";
+		
 		return "Ok para estado 2";
 
 	}
 
-	public String checkBasicDataStatusThree(Orden orden, int nroOrden) {
+	public String checkBasicDataStatusFour(Orden orden, int nroOrden) {
 
 		if (getPesajeFinal() == 0)
 			return "El atributo pesaje final es obligatorio";
@@ -342,5 +368,15 @@ public class Orden implements Serializable {
 		return "Ok para pesaje final";
 
 	}
+	
+	public String checkBasicDataStatusThree(Orden orden) {
+		
+		if(orden.getPreset()!= orden.getUltimaMasaAcumulada())
+			return "El camion aun no esta lleno"; 
+		if(orden.getEstado()!=2)
+			return "No se pueden cerrar ordenes con estado 1";
+		return "Ok para cerrar orden";
+	}
+	
 
 }

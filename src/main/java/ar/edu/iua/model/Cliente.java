@@ -17,6 +17,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+@ApiModel(value="Cliente", description="Modelo de cliente")
 @Entity
 @Table(name = "clientes")
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
@@ -26,20 +29,25 @@ public class Cliente implements Serializable {
 
 	private static final long serialVersionUID = 6736832429914967093L;
 
+	@ApiModelProperty(notes="Identificador del cliente, clave autogenerada", required=false)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	@ApiModelProperty(notes="Razon social del cliente",required=true)
 	@Column(nullable = false)
 	private String razonSocial;
 
+	@ApiModelProperty(notes="Telefono de contacto del cliente", required=true)
 	@Column(nullable = false)
 	private long contacto;
 
+	@ApiModelProperty(notes="Lista de ordenes del cliente", required=false)
 	@OneToMany(targetEntity = Orden.class, mappedBy = "cliente", fetch = FetchType.LAZY)
 	@JsonBackReference
 	private List<Orden> ordenList;
 
+	@ApiModelProperty(notes="Codigo externo de integracion. Clave candidata", required=true)
 	@Column(length = 50, nullable = true, unique = true)
 	private String codigoexterno;
 

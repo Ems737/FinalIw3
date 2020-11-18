@@ -7,6 +7,7 @@ import ar.edu.iua.model.dto.RespuestaGenerica;
 
 public interface IDetalleOrdenBusiness {
 
+	
 	public DetalleOrden load(long id) throws BusinessException, NotFoundException;
 	public RespuestaGenerica<DetalleOrden> cargarCamion(DetalleOrden detalleOrden, int nroOrden) throws BusinessException,NotFoundException;
 

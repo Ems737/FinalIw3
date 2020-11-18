@@ -1,6 +1,7 @@
 package ar.edu.iua.business;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import ar.edu.iua.business.exception.BusinessException;
 import ar.edu.iua.business.exception.NotFoundException;
+
 import ar.edu.iua.model.Orden;
 import ar.edu.iua.model.dto.ConciliacionDTO;
 import ar.edu.iua.model.dto.MensajeRespuesta;
@@ -44,15 +46,16 @@ public class OrdenBusiness implements IOrdenBusiness {
 		if (mensajeCheck != "Ok para estado 1") {
 			m.setCodigo(-1);
 			m.setMensaje(mensajeCheck);
+			System.out.println("estoy en un error");
 			return rg;
 		}
 
 		try {
+			System.out.println("estoy aca");
 			orden.setNumeroOrden(orden.getNumeroOrden());
 			orden.setChofer(choferService.asegurarChofer(orden.getChofer()));
 			orden.setCamion(camionService.asegurarCamion(orden.getCamion()));
 			orden.setCliente(clienteService.asegurarCliente(orden.getCliente()));
-			orden.setChofer(choferService.asegurarChofer(orden.getChofer()));
 			orden.setProducto(productoService.asegurarProducto(orden.getProducto()));
 			orden.setTurno(orden.getTurno());
 			orden.setPreset(orden.getPreset());
@@ -120,7 +123,7 @@ public class OrdenBusiness implements IOrdenBusiness {
 		MensajeRespuesta m = new MensajeRespuesta();
 		RespuestaGenerica<Orden> rg = new RespuestaGenerica<Orden>(orden, m);
 
-		String mensajeCheck = orden.checkBasicDataStatusThree(ordenVieja, nroOrden);
+		String mensajeCheck = orden.checkBasicDataStatusFour(ordenVieja, nroOrden);
 
 		if (mensajeCheck != "Ok para pesaje final") {
 			m.setCodigo(-1);
@@ -178,4 +181,43 @@ public class OrdenBusiness implements IOrdenBusiness {
 
 	}
 
-}
+	@Override
+	public List<Orden> list() throws BusinessException {
+		try {
+			return ordenDAO.findAll();
+		} catch (Exception e) {
+			throw new BusinessException(e);
+		}
+	}
+
+	@Override
+	public RespuestaGenerica<Orden> cerrarOrden(int nroOrden) throws BusinessException, NotFoundException {
+	
+			Orden orden = load(nroOrden);
+			MensajeRespuesta m = new MensajeRespuesta();
+			RespuestaGenerica<Orden> rg = new RespuestaGenerica<Orden>(orden, m);
+
+
+
+			String mensajeCheck = orden.checkBasicDataStatusThree(orden); 
+
+			if (mensajeCheck != "Ok para cerrar orden") {
+				m.setCodigo(-1);
+				m.setMensaje(mensajeCheck);
+				return rg;
+			}
+
+			try {
+				orden.setEstado(3);
+				ordenDAO.save(orden);
+			} catch (Exception e) {
+				throw new BusinessException();
+			}
+
+			return rg;
+		}
+	}
+
+	
+	
+
