@@ -13,7 +13,15 @@ public interface DetalleOrdenRepository extends JpaRepository<DetalleOrden, Long
 
 	Optional<DetalleOrden> findById(long id);
 
-	@Query(value = "SELECT * from detalle_orden where id_orden=?1 order by fecha_hora_medicion asc limit 1", nativeQuery = true)
+	@Query(value = "SELECT * from detalle_orden where id_orden = ?1 order by fecha_hora_medicion asc limit 1", nativeQuery = true)
 	public DetalleOrden findByFechaHoraMedicionAsc(int idOrden);
+	
+	
+	@Query(value = "SELECT * from detalle_orden where id_orden = ?1 order by fecha_hora_medicion desc limit 1", nativeQuery = true)
+	public DetalleOrden findByFechaHoraMedicionDesc(int idOrden);
+	
+	
+	
+	
 
 }

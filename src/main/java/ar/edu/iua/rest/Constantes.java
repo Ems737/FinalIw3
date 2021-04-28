@@ -13,6 +13,11 @@ public final class Constantes {
 	public static final String URL_CLIENTES = URL_BASE + "/clientes";
 	public static final String URL_DETALLE_ORDEN = URL_BASE + "/detallesOrdenes";
 	
+	public static final String URL_AUTH_INFO = "/auth-info";
+	public static final String URL_LOGOUT = "/logout-token";
+	
+	
+	
 
 	
 }

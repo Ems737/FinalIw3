@@ -1,5 +1,7 @@
 package ar.edu.iua.business;
 
+import java.sql.Time;
+import java.util.concurrent.TimeUnit;
 import java.util.Date;
 import java.util.Optional;
 
@@ -48,6 +50,7 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 	@Override
 	public RespuestaGenerica<DetalleOrden> cargarCamion(DetalleOrden detalleOrden, int nroOrden)
 			throws BusinessException, NotFoundException {
+
 		MensajeRespuesta m = new MensajeRespuesta();
 		RespuestaGenerica<DetalleOrden> rg = new RespuestaGenerica<DetalleOrden>(detalleOrden, m);
 
@@ -68,22 +71,75 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 			detalleOrden.setTemperatura(detalleOrden.getTemperatura());
 			detalleOrden.setCaudal(detalleOrden.getCaudal());
 			detalleOrden.setFechaHoraMedicion(new Date());
-			detalleOrdenDAO.save(detalleOrden);
 
-			// MODIFICAMOS LA ORDEN
-			orden.setUltimaMasaAcumulada(detalleOrden.getMasaAcumulada());
-			orden.setUltimaDensidad(detalleOrden.getDensidad());
-			orden.setUltimaTemperatura(detalleOrden.getTemperatura());
-			orden.setUltimoCaudal(detalleOrden.getCaudal());
-			orden.setFechaHoraInicioCarga(
-					detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
-			orden.setFechaHoraFinCarga(new Date());
+			// SE COMPARA LA FECHAHORAMEDICION DEL DETALLE ORDEN CON LA FECHAHORAMEDICION
+			// DEL
+			// ULTIMO DETALLE ORDEN PARA VER SI HAY QUE ALMACENARLO O SOLO ACTUALIZAR LA
+			// ORDEN
 
-			// if (orden.getPreset() == detalleOrden.getMasaAcumulada()) {
-			// orden.setEstado(3);
-			// m.setCodigo(0);
-			// m.setMensaje("Camion cargado");
-			// }
+			// Se obtiene la fecha hora del ultimo detalle
+			if (detalleOrdenDAO.findByFechaHoraMedicionDesc(orden.getId()) != null) {
+				Date ultimoDetalleOrden = detalleOrdenDAO.findByFechaHoraMedicionDesc(orden.getId())
+						.getFechaHoraMedicion();
+
+				// Como se sabe que si o si la medicion se realiza el dia del turno, se compara
+				// solo el tiempo
+
+				Time timeNuevoDetalleOrden = Time.valueOf(detalleOrden.getFechaHoraMedicion().getHours() + ":"
+						+ detalleOrden.getFechaHoraMedicion().getMinutes() + ":"
+						+ detalleOrden.getFechaHoraMedicion().getSeconds());
+
+				Time timeUltimoAlmacenamiento = Time.valueOf(orden.getFechaHoraUltimoAlmacenamiento().getHours() + ":"
+						+ orden.getFechaHoraUltimoAlmacenamiento().getMinutes() + ":"
+						+ orden.getFechaHoraUltimoAlmacenamiento().getSeconds());
+
+				System.out.println("HORA DEL NUEVO DETALLE " + timeNuevoDetalleOrden);
+				System.out.println("HORA DEL ULTIMO almacenamiento " + timeUltimoAlmacenamiento);
+
+				long difference = timeNuevoDetalleOrden.getTime() - timeUltimoAlmacenamiento.getTime();
+				long hours = TimeUnit.MILLISECONDS.toHours(difference);
+				long seconds = TimeUnit.MILLISECONDS.toSeconds(difference);
+				long minutes = TimeUnit.MILLISECONDS.toMinutes(difference);
+
+				System.out.println("Time in seconds: " + seconds + " seconds.");
+				System.out.println("Time in minutes: " + minutes + " minutes.");
+				System.out.println("Time in hours: " + hours + " hours.");
+
+				if (seconds < 60) // Si pasaron menos de 60 segundos solo actualizamos la orden
+				{
+
+					orden.setUltimaMasaAcumulada(detalleOrden.getMasaAcumulada());
+					orden.setUltimaDensidad(detalleOrden.getDensidad());
+					orden.setUltimaTemperatura(detalleOrden.getTemperatura());
+					orden.setUltimoCaudal(detalleOrden.getCaudal());
+					orden.setFechaHoraInicioCarga(
+							detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
+					orden.setFechaHoraFinCarga(detalleOrden.getFechaHoraMedicion());
+				}
+
+				else // Guardamos el detalle orden y actualizamos la orden
+				{
+					detalleOrdenDAO.save(detalleOrden);
+					orden.setUltimaMasaAcumulada(detalleOrden.getMasaAcumulada());
+					orden.setUltimaDensidad(detalleOrden.getDensidad());
+					orden.setUltimaTemperatura(detalleOrden.getTemperatura());
+					orden.setUltimoCaudal(detalleOrden.getCaudal());
+					orden.setFechaHoraInicioCarga(
+							detalleOrdenDAO.findByFechaHoraMedicionAsc(orden.getId()).getFechaHoraMedicion());
+					orden.setFechaHoraFinCarga(detalleOrden.getFechaHoraMedicion());
+					orden.setFechaHoraUltimoAlmacenamiento(new Date());
+				}
+
+			} else {
+				orden.setUltimaMasaAcumulada(detalleOrden.getMasaAcumulada());
+				orden.setUltimaDensidad(detalleOrden.getDensidad());
+				orden.setUltimaTemperatura(detalleOrden.getTemperatura());
+				orden.setUltimoCaudal(detalleOrden.getCaudal());
+				orden.setFechaHoraInicioCarga(detalleOrden.getFechaHoraMedicion());
+				orden.setFechaHoraFinCarga(detalleOrden.getFechaHoraMedicion());
+				orden.setFechaHoraUltimoAlmacenamiento(detalleOrden.getFechaHoraMedicion());
+				detalleOrdenDAO.save(detalleOrden);
+			}
 
 			ordenDAO.save(orden);
 		} catch (Exception e) {
@@ -92,7 +148,5 @@ public class DetalleOrdenBusiness implements IDetalleOrdenBusiness {
 
 		return rg;
 	}
-
-	
 
 }
